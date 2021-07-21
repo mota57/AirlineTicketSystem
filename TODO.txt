@@ -1,0 +1,59 @@
+﻿DONE-----INSTALL AUTOMMATER AND TEST IT
+DONE-----INSTALL ENTITY FRAMEWOK
+CREATE DB CONTEXT
+
+
+TODO GATE NAME MUST BE UNIQUE
+TODO TERMINAL NAME MUST BE UNIQUE
+
+
+https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities
+ public static InsertOrUpdateGraph(AirportDTO airport)
+        {
+            var existingBlog = _context.Airports
+            .Include(b => b.Terminals)
+            .FirstOrDefault(b => b.BlogId == blog.BlogId);
+            if (existingBlog == null)
+            {
+                context.Add(blog);
+            }
+            else
+            {
+                context.Entry(existingBlog).CurrentValues.SetValues(blog);
+                foreach (var post in blog.Posts)
+                {
+                    var existingPost = existingBlog.Posts
+                    .FirstOrDefault(p => p.PostId == post.PostId);
+                    if (existingPost == null)
+                    {
+                        existingBlog.Posts.Add(post);
+                    }
+                    else
+                    {
+                        context.Entry(existingPost).CurrentValues.SetValues(post);
+                    }
+                }
+            }
+            context.SaveChanges();
+        }
+
+
+        AUTOMAPPER IN THE SERVICE.
+        services.AddAutoMapper(options =>
+            {
+                options.CreateMap<AutorDTO, Autor>().ReverseMap();
+                options.CreateMap<AutorCreacionDTO, Autor>().ReverseMap();
+            }, typeof(Startup));
+
+
+            CURSO DE UDEMY
+            Master en Frameworks JavaScript: Aprende Angular, React, Vue
+
+
+             [Column(TypeName = "decimal(18,2)")]
+            public decimal Price { get; set; }
+
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");

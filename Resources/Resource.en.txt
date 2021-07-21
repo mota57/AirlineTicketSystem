@@ -1,0 +1,2 @@
+﻿msgBagPriceNone=Necesita informacion sobre los precios y medidas
+msgBagPriceOverlap=Los Precios no pueden sobreponerse.
