@@ -1,7 +1,7 @@
 ﻿using System;
 namespace AireLineTicketSystem.Entities
 {
-    public class FlightPrice
+    public class FlightPrice : Entity
     {
         public int Id { get; set; }
         public DateTime? StartTimePrice { get; set; }

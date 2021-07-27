@@ -1,8 +1,10 @@
 ﻿using AireLineTicketSystem.Entities;
 using AireLineTicketSystem.Infraestructure.Model;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,12 +20,13 @@ namespace AireLineTicketSystem.Controllers
     {
         private readonly AireLineTicketSystemContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<AirlineApiController> logger;
 
-
-        public AirlineApiController(AireLineTicketSystemContext context, IMapper mapper)
+        public AirlineApiController(AireLineTicketSystemContext context, IMapper mapper, ILogger<AirlineApiController> logger)
         {
             _context = context;
             _mapper = mapper;
+            this.logger = logger;
         }
         // GET: api/<AirlineApi>
         [HttpGet]
@@ -35,6 +38,9 @@ namespace AireLineTicketSystem.Controllers
         {
             return _mapper.Map<List<AirlineDTO>>(_context.Airlines.Where(p => p.Name.StartsWith(name)).ToList());
         }
+
+     
+    
 
         // GET api/<AirlineApi>/GetById/5
         [HttpGet("GetById/{id}")]
@@ -92,6 +98,64 @@ namespace AireLineTicketSystem.Controllers
             }
             return NoContent();
         }
-      
+
+
+        // DELETE api/<AirportContorller>/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int airportid)
+        {
+            var record = await _context.Airlines
+                            .Include(p => p.Terminals)
+                            .Include(p => p.AirlineAirport)
+                            .Include(p => p.Gates)
+                            .Include(p => p.BagPriceMaster)
+                            .ThenInclude(p => p.BagPriceDetails)
+                            .FirstOrDefaultAsync(x => x.Id == airportid);
+
+            if (record != null)
+            {
+                return NotFound();
+            }
+
+            using var transaction = _context.Database.BeginTransaction();
+            
+            try
+            {
+                _context.SetIsDelete(record);
+                _context.SetIsDelete(record.AirlineAirport.Cast<Entity>().ToList());
+                
+                await _context.SaveChangesAsync();
+
+                //unlink terminals and gates
+                foreach (var entity in record.Terminals)
+                {
+                    entity.AirlineId = null;
+                    _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
+                }
+
+                foreach (var entity in record.Gates)
+                {
+                    entity.AirlineId = null;
+                    _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
+                }
+                await _context.SaveChangesAsync();
+
+
+                _context.SetIsDelete(record.Airplanes.Cast<Entity>().ToList());
+                _context.SetIsDelete(record.BagPriceMaster);
+                _context.SetIsDelete(record.BagPriceMaster.BagPriceDetails.Cast<Entity>().ToList());
+
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return NoContent();
+        }
+
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 namespace AireLineTicketSystem.Entities
 {
-    public class Gate
+    public class Gate : Entity
     {
         public int Id { get;set;}
         [Required, StringLength(3, MinimumLength =1)]
@@ -11,6 +11,8 @@ namespace AireLineTicketSystem.Entities
         public int AirportId { get;set;}
         public Airport Airport { get;set;}
         public bool IsActive { get;set;}
+        public int? AirlineId { get; set; }
+        public Airline Airline { get; set; }
         public ICollection<Flight> Flights { get; set; } = new HashSet<Flight>();
     }
 

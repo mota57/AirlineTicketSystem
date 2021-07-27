@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace AireLineTicketSystem.Entities
 {
-    public class BagPriceDetail 
+    public class BagPriceDetail: Entity
     {
         public int Id { get; set; }
         public decimal PoundStart { get; set; }

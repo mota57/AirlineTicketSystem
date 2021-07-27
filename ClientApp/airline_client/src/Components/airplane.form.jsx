@@ -1,45 +1,48 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import apiUrls from "../utils/endpoints";
-import { Redirect, useParams } from "react-router-dom";
+import { Redirect, useLocation, Link } from "react-router-dom";
 import FormError from "./form.error";
 import { changeHandlerBuilder } from "../utils/methods";
 
 export default function AirplaneFormComponent(props) {
-  const { airplaneid, airlineid } = useParams();
+  const query = new URLSearchParams(useLocation().search);
+  const airlineId =
+    query.get("airlineid") != null ? Number(query.get("airlineid")) : 0;
+  const airplaneId = query.get("airplaneid") || 0;
+
+  console.log(`recordid airlineid::${airlineId}, airplaneId::${airplaneId}`);
 
   const [record, setRecord] = useState({
-    name: "",
     brand: "",
     model: "",
     code: "",
     totalSeats: 0,
-    airlineid,
+    airlineId,
   });
 
-  const recordid = airplaneid || 0;
-  const [shouldRedirect, setRedirect] = useState(false);
+  const recordid = airplaneId || 0;
+  const [redictTo, setRedirect] = useState(null);
   const [formErrorObj, setFormErrorObj] = useState(null);
-
-  console.log("recordid airplane", recordid);
 
   const changeHandler = changeHandlerBuilder(setRecord, record);
 
   useEffect(() => {
-    if (recordid > 0) {
-      axios
-        .get(`${apiUrls.airplane.getbyid}/${recordid}`)
-        .then((data) =>
-          setRecord({
-            name: data.data.name,
-            brand: data.data.brand,
-            model: data.data.model,
-            code: data.data.code,
-            totalSeats: data.data.totalSeats,
-          })
-        )
-        .catch((e) => console.error(e));
-    }
+    axios
+      .get(`${apiUrls.airplane.getbyid}/${recordid}`)
+      .then((data) =>
+        setRecord({
+          name: data.data.name,
+          brand: data.data.brand,
+          model: data.data.model,
+          code: data.data.code,
+          totalSeats: data.data.totalSeats,
+          airlineId: data.data.airlineId,
+        })
+      )
+      .catch((e) => {
+        setRedirect(`/error_page/404`);
+      });
   }, []);
 
   function onSubmit(e) {
@@ -48,23 +51,31 @@ export default function AirplaneFormComponent(props) {
     if (recordid <= 0) {
       axios
         .post(apiUrls.airplane.url, record)
-        .then(() => setRedirect(true))
+        .then(() => setRedirect(`/airplane/${airlineId}`))
         .catch((data) => {
           setFormErrorObj(data);
         });
     } else {
       axios
         .put(`${apiUrls.airplane.url}/${recordid}`, record)
-        .then(() => setRedirect(true))
+        .then(() => setRedirect(`/airplane/${airlineId}`))
         .catch((data) => {
           setFormErrorObj(data.response.data);
         });
     }
   }
 
-  if (shouldRedirect) {
-    let url = `/airplane`;
-    return <Redirect to={url} />;
+  if (airlineId == 0) {
+    return (
+      <div class="alert alert-danger">
+        Recurso no encontrado
+        <Link to="/airline">Ir a aerolineas</Link>
+      </div>
+    );
+  }
+
+  if (redictTo != null) {
+    return <Redirect to={redictTo} />;
   }
 
   return (
@@ -76,17 +87,6 @@ export default function AirplaneFormComponent(props) {
         <FormError formerrorobj={formErrorObj} />
 
         <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
-          <div className="form-group">
-            <label className="form-label">Name </label>
-            <input
-              type="text"
-              className="form-control"
-              name="name"
-              value={record.name}
-              onChange={changeHandler}
-            />
-          </div>
-
           <div className="form-group">
             <label className="form-label">Marca </label>
             <input
@@ -151,7 +151,7 @@ export default function AirplaneFormComponent(props) {
               type="button"
               value="Cancelar"
               className="btn btn-danger"
-              onClick={() => setRedirect(true)}
+              onClick={() => setRedirect(`/airplane/${airlineId}`)}
             />
           </div>
         </form>

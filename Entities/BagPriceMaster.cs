@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AireLineTicketSystem.Entities
 {
-    public class BagPriceMaster : IValidatableObject
+    public class BagPriceMaster : Entity, IValidatableObject
     {
         public int Id { get;set;}
         public int AirlineId { get;set;}

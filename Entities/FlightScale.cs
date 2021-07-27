@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace AireLineTicketSystem.Entities
 {
-    public class FlightScale //: IValidatableObject
+    public class FlightScale : Entity //: IValidatableObject
     {
         public int Id { get;set;}
         public string Code { get;set;}

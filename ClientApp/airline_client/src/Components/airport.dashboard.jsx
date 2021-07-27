@@ -29,19 +29,20 @@ export default function AirportDashboard(props) {
       <div className="col d-flex align-items-start">
         <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#bootstrap"></use></svg>
         <div>
-          {/* <h4 className="fw-bold mb-0">Modificar</h4> */}
+          {/* <h4 className="fw-bold mb-0">Datos</h4> */}
           <Link className="btn btn-primary" 
-          to={{ pathname:`/airport/form/${recordid}`, state: { recordid:recordid }} }>Modificar aeropuerto</Link>
+          to={{ pathname:`/airport/form/${recordid}`, state: { recordid:recordid }} }>Datos</Link>
         </div>
       </div>
-      {/* <div className="col d-flex align-items-start">
+       <div className="col d-flex align-items-start">
         <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#cpu-fill"></use></svg>
         <div>
-          <h4 className="fw-bold mb-0">Featured title</h4>
-          <p>Paragraph of text beneath the heading to explain the heading.</p>
+          {/* <h4 className="fw-bold mb-0">Aerolineas</h4> */}
+          <Link className="btn btn-primary" 
+          to={`/airport_airlines/${recordid}`}>Aerolineas</Link>
         </div>
       </div>
-      <div className="col d-flex align-items-start">
+     {/* <div className="col d-flex align-items-start">
         <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#calendar3"></use></svg>
         <div>
           <h4 className="fw-bold mb-0">Featured title</h4>

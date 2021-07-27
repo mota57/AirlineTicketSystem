@@ -1,6 +1,6 @@
 ﻿namespace AireLineTicketSystem.Entities
 {
-    public class FlightBagPayment
+    public class FlightBagPayment : Entity
     {
         public int Id { get;set;}
         public int FlightScaleId { get;set;}

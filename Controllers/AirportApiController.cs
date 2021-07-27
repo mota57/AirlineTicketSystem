@@ -2,8 +2,10 @@
 using AireLineTicketSystem.Infraestructure.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -21,12 +23,14 @@ namespace AireLineTicketSystem.Controllers
     {
         private readonly AireLineTicketSystemContext _context;
         private readonly IMapper _mapper;
-        
+        private readonly ILogger<AirportApiController> logger;
 
-        public AirportApiController(AireLineTicketSystemContext context, IMapper mapper)
+        public AirportApiController(AireLineTicketSystemContext context, IMapper mapper, ILogger<AirportApiController> logger)
         {
             _context = context;
             _mapper = mapper;
+            this.logger = logger;
+            this.logger.LogInformation("AirportApiController::init");
         }
         // GET: api/<AirportContorller>
         [HttpGet]
@@ -107,7 +111,7 @@ namespace AireLineTicketSystem.Controllers
             return NoContent();
         }
 
-        
+
 
 
         //public static InsertOrUpdateGraph(AirportDTO airport)
@@ -140,20 +144,50 @@ namespace AireLineTicketSystem.Controllers
         //}
 
 
-        //// DELETE api/<AirportContorller>/5
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult> Delete(int id)
-        //{
-        //    var existe = await _context.Airports.AnyAsync(x => x.Id == id);
+        // DELETE api/<AirportContorller>/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int airportid)
+        {
+            var record = await _context.Airports
+                            .Include(p => p.Terminals)
+                            .Include(p => p.AirlineAirport)
+                            .Include(p => p.Gates)
+                            .FirstOrDefaultAsync(x => x.Id == airportid);
 
-        //    if (!existe)
-        //    {
-        //        return NotFound();
-        //    }
+            if (record != null)
+            {
+                return NotFound();
+            }
 
-        //    _context.Remove(new Airport() { Id = id });
-        //    await _context.SaveChangesAsync();
-        //    return NoContent();
-        //}
+            using var transaction = _context.Database.BeginTransaction();
+
+            try
+            {
+
+                _context.SetIsDelete(record);
+                _context.SetIsDelete(record.AirlineAirport.Cast<Entity>().ToList());
+
+                //unlink terminals and gates
+                foreach (var entity in record.Terminals)
+                {
+                    entity.AirlineId = null;
+                    _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
+                }
+
+                foreach (var entity in record.Gates)
+                {
+                    entity.AirlineId = null;
+                    _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return NoContent();
+        }
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace AireLineTicketSystem.Entities
 {
-    public class Passenger
+    public class Passenger : Entity
     {
         public int Id { get; set; }
         [StringLength(20, MinimumLength =1)]

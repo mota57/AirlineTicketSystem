@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,17 +15,35 @@ namespace AireLineTicketSystem
 {
     public class Program
     {
+
         public static void Main(string[] args)
         {
-           var host =  CreateHostBuilder(args).Build();
+            Log.Logger = new LoggerConfiguration()
+           .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+           .Enrich.FromLogContext()
+           .WriteTo.Debug()
+           //.WriteTo.File(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs.txt"))
+           .CreateLogger();
 
-            var services = host.Services;
-            host.Run();
+            try
+            {
+                Log.Information("Starting web host");
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

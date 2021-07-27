@@ -26,6 +26,9 @@ namespace AireLineTicketSystem.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -41,18 +44,28 @@ namespace AireLineTicketSystem.Migrations
 
             modelBuilder.Entity("AireLineTicketSystem.Entities.AirlineAirport", b =>
                 {
-                    b.Property<int>("AirlinesId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("AirlineId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AirportsId")
+                    b.Property<int?>("AirportId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.HasKey("AirlinesId", "AirportsId");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                    b.HasIndex("AirportsId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("AirlineId");
+
+                    b.HasIndex("AirportId");
 
                     b.ToTable("AirlineAirport");
                 });
@@ -64,7 +77,7 @@ namespace AireLineTicketSystem.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AirlineId")
+                    b.Property<int?>("AirlineId")
                         .HasColumnType("int");
 
                     b.Property<string>("Brand")
@@ -76,6 +89,9 @@ namespace AireLineTicketSystem.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Model")
                         .IsRequired()
@@ -108,6 +124,9 @@ namespace AireLineTicketSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -161,9 +180,13 @@ namespace AireLineTicketSystem.Migrations
                     b.Property<int>("AirlineId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AirlineId");
+                    b.HasIndex("AirlineId")
+                        .IsUnique();
 
                     b.ToTable("BagPriceMasters");
                 });
@@ -1666,6 +1689,9 @@ namespace AireLineTicketSystem.Migrations
                     b.Property<int?>("GateId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("PassengerId")
                         .HasColumnType("int");
 
@@ -1694,6 +1720,9 @@ namespace AireLineTicketSystem.Migrations
 
                     b.Property<int>("FlightScaleId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("PassengerId")
                         .HasColumnType("int");
@@ -1729,6 +1758,9 @@ namespace AireLineTicketSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Price")
@@ -1775,6 +1807,9 @@ namespace AireLineTicketSystem.Migrations
                     b.Property<int>("GateId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("MinPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -1808,10 +1843,16 @@ namespace AireLineTicketSystem.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AirlineId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AirportId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -1820,6 +1861,8 @@ namespace AireLineTicketSystem.Migrations
                         .HasColumnType("nvarchar(3)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AirlineId");
 
                     b.HasIndex("AirportId");
 
@@ -1835,6 +1878,9 @@ namespace AireLineTicketSystem.Migrations
 
                     b.Property<int>("CountryPassportId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasMaxLength(20)
@@ -1871,6 +1917,9 @@ namespace AireLineTicketSystem.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(3)
@@ -1889,15 +1938,13 @@ namespace AireLineTicketSystem.Migrations
                 {
                     b.HasOne("AireLineTicketSystem.Entities.Airline", "Airline")
                         .WithMany("AirlineAirport")
-                        .HasForeignKey("AirlinesId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("AirlineId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("AireLineTicketSystem.Entities.Airport", "Airport")
                         .WithMany("AirlineAirport")
-                        .HasForeignKey("AirportsId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("AirportId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Airline");
 
@@ -1909,8 +1956,7 @@ namespace AireLineTicketSystem.Migrations
                     b.HasOne("AireLineTicketSystem.Entities.Airline", "Airline")
                         .WithMany("Airplanes")
                         .HasForeignKey("AirlineId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Airline");
                 });
@@ -1940,8 +1986,8 @@ namespace AireLineTicketSystem.Migrations
             modelBuilder.Entity("AireLineTicketSystem.Entities.BagPriceMaster", b =>
                 {
                     b.HasOne("AireLineTicketSystem.Entities.Airline", "Airline")
-                        .WithMany()
-                        .HasForeignKey("AirlineId")
+                        .WithOne("BagPriceMaster")
+                        .HasForeignKey("AireLineTicketSystem.Entities.BagPriceMaster", "AirlineId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -2063,11 +2109,18 @@ namespace AireLineTicketSystem.Migrations
 
             modelBuilder.Entity("AireLineTicketSystem.Entities.Gate", b =>
                 {
+                    b.HasOne("AireLineTicketSystem.Entities.Airline", "Airline")
+                        .WithMany("Gates")
+                        .HasForeignKey("AirlineId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("AireLineTicketSystem.Entities.Airport", "Airport")
                         .WithMany("Gates")
                         .HasForeignKey("AirportId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Airline");
 
                     b.Navigation("Airport");
                 });
@@ -2107,7 +2160,11 @@ namespace AireLineTicketSystem.Migrations
 
                     b.Navigation("Airplanes");
 
+                    b.Navigation("BagPriceMaster");
+
                     b.Navigation("Flights");
+
+                    b.Navigation("Gates");
 
                     b.Navigation("Terminals");
                 });

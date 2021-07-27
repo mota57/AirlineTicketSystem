@@ -2,7 +2,7 @@
 
 namespace AireLineTicketSystem.Entities
 {
-    public class FlightTracker
+    public class FlightTracker : Entity
     {
         public int Id { get; set; }
         public int? PassengerId { get; set; }

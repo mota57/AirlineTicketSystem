@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,12 +21,13 @@ namespace AireLineTicketSystem.Controllers
     {
         private readonly AireLineTicketSystemContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<AirplaneApiController> logger;
 
-
-        public AirplaneApiController(AireLineTicketSystemContext context, IMapper mapper)
+        public AirplaneApiController(AireLineTicketSystemContext context, IMapper mapper, ILogger<AirplaneApiController> logger)
         {
             _context = context;
             _mapper = mapper;
+            this.logger = logger;
         }
         // GET: api/<AirplaneApi>
         [HttpGet]
@@ -39,6 +41,14 @@ namespace AireLineTicketSystem.Controllers
             return _mapper.Map<List<AirplaneDTO>>(_context.Airports.Where(p => p.Name.StartsWith(name) || p.Code.StartsWith(name)).ToList());
         }
 
+
+        [HttpGet("GetByAirlineId/{airlineid}")]
+        public IEnumerable<AirplaneDTO> GetByAirlineId(int airlineid)
+        {
+            return _mapper.Map<List<AirplaneDTO>>(_context.Airplanes.Where(a => a.AirlineId == airlineid).ToList());
+        }
+
+
         // GET api/<AirplaneApi>/GetById/5
         [HttpGet("GetById/{id}")]
         public async Task<ActionResult<AirplaneDTO>> GetById(int id)
@@ -51,6 +61,8 @@ namespace AireLineTicketSystem.Controllers
                 return NotFound();
             return _mapper.Map<AirplaneDTO>(record);
         }
+
+
 
         // POST api/<AirplaneApi>
        [HttpPost]
@@ -101,6 +113,22 @@ namespace AireLineTicketSystem.Controllers
             }
             return NoContent();
         }
-      
+
+        [HttpDelete()]
+        public async Task<ActionResult> Delete( [FromQuery] int airplaneid)
+        {
+            try { 
+                var record = await _context.Airplanes.FirstOrDefaultAsync(p => p.Id == airplaneid);
+                if (record == null)
+                    return NotFound();
+                _context.SetIsDelete(record);
+                await _context.SaveChangesAsync();
+            } catch (Exception e)
+            {
+                this.logger.LogError(e.ToString());
+            }
+            return NoContent();
+        }
+
     }
 }

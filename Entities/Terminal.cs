@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 namespace AireLineTicketSystem.Entities
 {
-    public class Terminal
+    public class Terminal : Entity
     {
         public int Id { get;set;}
         [Required, StringLength(3,MinimumLength = 1)]

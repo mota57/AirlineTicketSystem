@@ -1,0 +1,10 @@
+ if(record.countryId == null || record.countryId <= 0) {
+      setFormErrorObj({ rawerror: true, errors:{'Country': ['Este campo es requerido']}})
+      return;
+    }
+
+
+
+   var errorFields = errorBuilder("Aerolinea", state)
+        .isTrue((e) => e.aerlineaId == null || e.aerlineaId <= 0, "Este campo es requerido")
+        .isTrue((e) => e.aerlineaId == null || e.aerlineaId <= 0, "Este campo es requerido")

@@ -1,4 +1,29 @@
 import {uuidv4} from '../utils/methods';
+import { Redirect } from 'react-router';
+
+
+
+export default function FormError(props) {
+  if(props.formerrorobj == null) {
+    return <></>
+  } else if (props.formerrorobj.rawerror) {
+    return <> {BuildErros(props.formerrorobj.errors)}</>;
+  // } else if (props.formerrorobj?.request?.status == 404) {
+  //   return <> <Redirect to={"/error_page/404"}/> </>;
+  } else if (props.formerrorobj?.request?.status == 400) {
+    let errors = props.formerrorobj.response.data;
+    return <> {BuildErros(errors)}</>;
+  } else {
+    return (
+      <>
+        <div className="alert alert-danger">Lo sentimos un error a ocurrido.</div>
+      </>
+    );
+  }
+}
+
+
+
 
 function BuildErros(errors) {
 
@@ -11,8 +36,9 @@ function BuildErros(errors) {
           <label >{errorKey}</label>
           <ul>
             {errors[errorKey].map((errorText) => {
+              let uid = uuidv4();
               return (
-                <li key={uuidv4()}>
+                <li key={uid} data-id={uid}>
                   <label className="text-danger">{errorText}</label>
                 </li>
               );
@@ -23,24 +49,4 @@ function BuildErros(errors) {
       })}
     </>
   );
-}
-
-
-
-export default function FormError(props) {
-  console.log('formerror::',props);
-  if(props.formerrorobj == null) {
-    return <></>
-  } else if (props.formerrorobj.rawerror) {
-    return <> {BuildErros(props.formerrorobj.errors)}</>;
-  } else if (props.formerrorobj && props.formerrorobj.status == 400) {
-    let errors = props.formerrorobj.response.data;
-    return <> {BuildErros(errors)}</>;
-  } else {
-    return (
-      <>
-        <div className="alert alert-danger">An error ocurred</div>
-      </>
-    );
-  }
 }

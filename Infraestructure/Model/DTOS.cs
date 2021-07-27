@@ -18,6 +18,15 @@ namespace AireLineTicketSystem.Infraestructure.Model
         public List<AirlineDTO> Airlines { get; set;}
     }
 
+    public class AirlineAirportDTO
+    {
+        public int AirportId { get;set;}
+        public string AirlineName { get;set;}
+        public string AirportName { get; set; }
+        public int AirlineId { get;set; }
+        public bool IsActive { get;set;}
+    }
+
     public class AirportCreateDTO
     {
         public int Id { get; set; }

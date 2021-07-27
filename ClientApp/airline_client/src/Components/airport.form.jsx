@@ -44,8 +44,9 @@ export default function AirportFormComponent(props) {
 
   function onSubmit(e) {
     e.preventDefault();
+    //why I put this?
     if(record.countryId == null || record.countryId <= 0) {
-      setFormErrorObj({ rawerror: true, errors:{'Country': ['This field is required']}})
+      setFormErrorObj({ rawerror: true, errors:{'Country': ['Este campo es requerido']}})
       return;
     }
 

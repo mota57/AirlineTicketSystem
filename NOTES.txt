@@ -57,3 +57,40 @@ https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
+
+
+
+                [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+
+   /*ONE TO ONE*/
+public class Airline
+    {
+      
+        public int Id { get;set;}
+        
+        public BagPriceMaster BagPriceMaster { get;set;}
+		
+	}
+	
+		public class BagPriceMaster
+    {
+        public int Id { get;set;}
+        public int AirlineId { get;set;}
+        public Airline Airline { get;set;}
+	}
+
+//force with fluent validation
+            modelBuilder.Entity<Airline>()
+           .HasOne(b => b.BagPriceMaster)
+           .WithOne(i => i.Airline)
+           .HasForeignKey<BagPriceMaster>(b => b.AirlineId);
+
+
+## serilog
+
+If you need to use ILogger (from Serilog) instead of ILogger<HomeController> (from Microsoft.Extensions.Logging), you can register ILogger on your Startup class:
+
+services.AddSingleton(Log.Logger);
