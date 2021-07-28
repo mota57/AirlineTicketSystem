@@ -119,7 +119,7 @@ export default function AirplaneComponent(props) {
                           showModalDelete: true,
                         })
                       }
-                      className="btn btn-success"
+                      className="btn btn-danger"
                     >
                       Eliminiar
                     </button>

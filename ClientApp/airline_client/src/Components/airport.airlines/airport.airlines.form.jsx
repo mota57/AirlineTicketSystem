@@ -12,12 +12,12 @@ export default function AirportAirlineForm(props) {
 
   const id = urlSearch.getNumberParam("id");
   const isCreate = id == null || id <= 0 ? true : false;
-  console.log("id::", id);
   const airlineId = urlSearch.getNumberParam("airlineId");
-
+  
   const airportId = urlSearch.getNumberParam("airportId");
-
+  
   const [redirectTo, setRedirect] = useState(null);
+  console.log("id::", id);
 
   const [state, setState] = useState({
     airportName: "LOADING",
@@ -84,7 +84,7 @@ export default function AirportAirlineForm(props) {
 
   return (
     <>
-      {/* <pre>{JSON.stringify(state, null, 2)}</pre> */}
+      <pre>{JSON.stringify(state, null, 2)}</pre>
       <div className="container">
         <h3>Asociar una aerolinea</h3>
 
@@ -99,9 +99,8 @@ export default function AirportAirlineForm(props) {
               value={state.airportName}
             />
           </Form.Group>
-
-          {/* outer:: {state.airlineId} */}
-          <Form.Group className="mb-3" controlId="airlineId">
+      
+          <div className="form-group m-top-1">
             <Picklist
               recordid={state.airlineId}
               fieldName="airlineId"
@@ -110,7 +109,7 @@ export default function AirportAirlineForm(props) {
               handleOnChange={changeHandler}
               logConsole={true}
             />
-          </Form.Group>
+          </div>
 
           <div className="form-group m-top-1">
             <input

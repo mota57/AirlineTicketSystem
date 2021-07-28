@@ -35,6 +35,7 @@ namespace AireLineTicketSystem.Infraestructure
             CreateMap<AirlineAirport, AirlineAirportDTO>()
                  .ForMember(p => p.AirlineId, (p) => p.MapFrom(x => x.AirlineId))
                  .ForMember(p => p.AirportId, (p) => p.MapFrom(x => x.AirportId))
+                 .ForMember(p => p.AirlineName, (p) => p.MapFrom(x => x.Airline.Name))
                 .ReverseMap();
 
         }

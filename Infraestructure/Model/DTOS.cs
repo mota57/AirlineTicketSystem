@@ -20,10 +20,11 @@ namespace AireLineTicketSystem.Infraestructure.Model
 
     public class AirlineAirportDTO
     {
-        public int AirportId { get;set;}
+        public int Id { get;set;}
+        public int? AirportId { get;set;}
         public string AirlineName { get;set;}
         public string AirportName { get; set; }
-        public int AirlineId { get;set; }
+        public int? AirlineId { get;set; }
         public bool IsActive { get;set;}
     }
 

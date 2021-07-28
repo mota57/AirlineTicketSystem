@@ -18,7 +18,7 @@ export default function AirlineComponent(props) {
     <div className="container m-top-1">
       <div >
 
-      <Link to={`/airline/form/0`}  className="btn btn-primary">Agregar2</Link>
+      <Link to={`/airline/form/0`}  className="btn btn-primary">Agregar Aerolinea</Link>
 
         </div>
       <table className="table table-striped">
@@ -36,13 +36,11 @@ export default function AirlineComponent(props) {
               <td style={{ width: "200px", fontWeight:'400' }}>{airline.isActive ? 'Activo' : 'Inactivo'}</td>
               <td>
                 <div className="" style={{ width: "200px" }}>
-                <Link to={`/airline/form/${airline.id}`} className="btn btn-success">Detalle</Link>
-                  {/* <button
-                    onClick={() => setRedirectForm(airline.id)}
-                    className="btn btn-success"
-                  >
-                    Details
-                  </button> */}
+                
+                <Link 
+                  to={`/airline/form/${airline.id}`} 
+                  className="btn btn-success m-r-1-sm">Detalle</Link>
+              
 
                 <Link to={`/airplane/${airline.id}`} className="btn btn-primary">
                   Aviones</Link>

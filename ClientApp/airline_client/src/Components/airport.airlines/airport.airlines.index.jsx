@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import apiUrls from "../../utils/endpoints";
 
-import { Link, useParams } from "react-router-dom";
+import { Link, Redirect, useParams } from "react-router-dom";
 import { ModalDelete } from "../app.modals";
 
 export default function AirportAirlineIndex(props) {
@@ -44,7 +44,7 @@ export default function AirportAirlineIndex(props) {
         console.error("loadAirlines ", e);
       })
       .then((data) => {
-        setState({...state, airlines: data.data});
+        setState({...state, airlines: data.data, showModalDelete: false, airlineId:null});
       });
   }
 
@@ -75,6 +75,8 @@ export default function AirportAirlineIndex(props) {
     setState({...state, ...objectUpdate});
   }
 
+
+
   return (
     <div className="container m-top-1">
       <ModalDelete
@@ -100,22 +102,30 @@ export default function AirportAirlineIndex(props) {
           </tr>
         </thead>
         <tbody>
-          {state.airlines.map((airline) => (
-            <tr key={airline.id}>
-              <td style={{ width: "800px" }}>{airline.name}</td>
+          {state.airlines.map((dto) => (
+            <tr key={dto.id}>
+              <td style={{ width: "800px" }}>{dto.airlineName }</td>
               <td style={{ width: "200px", fontWeight: "400" }}>
-                {airline.isActive ? "Activo" : "Inactivo"}
+                {dto.isActive ? "Activo" : "Inactivo"}
               </td>
               <td>
                 <div style={{ width: "200px" }}>
+
+                <Link
+                    to={`/airport_airlines/form?airportId=${airportid}&airlineId=${dto.airlineId}&id=${dto.id}` }
+                    className="btn btn-primary m-r-1-sm"
+                  >
+                    Editar
+                  </Link>
+
                   <button
                     onClick={() =>
                       changeProperty({
-                        airlineId:airline.id,
+                        airlineId:dto.id,
                         showModalDelete: true,
                       })
                     }
-                    className="btn btn-success"
+                    className="btn btn-danger"
                   >
                     Eliminiar
                   </button>

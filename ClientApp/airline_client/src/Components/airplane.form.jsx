@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import apiUrls from "../utils/endpoints";
 import { Redirect, useLocation, Link } from "react-router-dom";
 import FormError from "./form.error";
-import { changeHandlerBuilder } from "../utils/methods";
+import { changeHandlerBuilder, UrlSearchExtension } from "../utils/methods";
 
 export default function AirplaneFormComponent(props) {
-  const query = new URLSearchParams(useLocation().search);
-  const airlineId =
-    query.get("airlineid") != null ? Number(query.get("airlineid")) : 0;
-  const airplaneId = query.get("airplaneid") || 0;
+  const urlSearch = new UrlSearchExtension(useLocation().search);
+  const airlineId = urlSearch.getNumberParam("airlineid");
+
+  const airplaneId = urlSearch.getNumberParam("airplaneid");
 
   console.log(`recordid airlineid::${airlineId}, airplaneId::${airplaneId}`);
 
@@ -28,21 +28,23 @@ export default function AirplaneFormComponent(props) {
   const changeHandler = changeHandlerBuilder(setRecord, record);
 
   useEffect(() => {
-    axios
-      .get(`${apiUrls.airplane.getbyid}/${recordid}`)
-      .then((data) =>
-        setRecord({
-          name: data.data.name,
-          brand: data.data.brand,
-          model: data.data.model,
-          code: data.data.code,
-          totalSeats: data.data.totalSeats,
-          airlineId: data.data.airlineId,
-        })
-      )
-      .catch((e) => {
-        setRedirect(`/error_page/404`);
-      });
+    if (recordid > 0) {
+      axios
+        .get(`${apiUrls.airplane.getbyid}/${recordid}`)
+        .then((data) =>
+          setRecord({
+            name: data.data.name,
+            brand: data.data.brand,
+            model: data.data.model,
+            code: data.data.code,
+            totalSeats: data.data.totalSeats,
+            airlineId: data.data.airlineId,
+          })
+        )
+        .catch((e) => {
+          console.error(e);
+        });
+    }
   }, []);
 
   function onSubmit(e) {
@@ -80,7 +82,7 @@ export default function AirplaneFormComponent(props) {
 
   return (
     <>
-      <pre>{JSON.stringify(record, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(record, null, 2)}</pre> */}
       <div className="container">
         <h3>Avion</h3>
 

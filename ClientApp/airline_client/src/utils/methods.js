@@ -3,7 +3,8 @@ import axios from "axios";
 export function changeHandlerBuilder(setRecord, record) {
   const changeHandler = (e, booleanValue) => {
     var val = e.target.value;
-    if (e.target.name == "countryid") {
+    console.log('changeHandlerBuilder',e);
+    if (e.target.nodeName == "SELECT") {
       val = Number(val);
     }
     setRecord({

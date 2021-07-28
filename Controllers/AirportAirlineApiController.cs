@@ -50,6 +50,7 @@ namespace AireLineTicketSystem.Controllers
                 .AsNoTracking()
                 .Where(p => p.AirportId == airportid && p.AirlineId == airlineid)
                 .Select(p => new AirlineAirportDTO {
+                        Id = p.Id,
                         AirportId = p.Airport.Id,
                         AirportName = p.Airport.Name,
                         AirlineName = p.Airline.Name
@@ -63,37 +64,45 @@ namespace AireLineTicketSystem.Controllers
 
 
         [HttpGet("GetAirlinesByAirportId/{airportid}")]
-        public async Task<IEnumerable<AirlineDTO>> GetAirlinesByAirportId(int airportid)
+        public async Task<IEnumerable<AirlineAirportDTO>> GetAirlinesByAirportId(int airportid)
         {
             var records = await _context.AirlineAirport
                 .Include(p => p.Airline)
                 .Where(p => p.AirportId == airportid)
-                .Select(p => p.Airline)
-                .ToListAsync();
+                .Select(p => new AirlineAirportDTO
+                {
+                    Id = p.Id,
+                    AirlineId = p.AirlineId,
+                    AirlineName = p.Airline.Name
+                }).ToListAsync();
 
-            return _mapper.Map<List<AirlineDTO>>(records);
+            return records;
         }
 
 
         [HttpPost()]
         public async Task<ActionResult<IEnumerable<AirlineDTO>>> Post(AirlineAirportDTO dto)
         {
+            if(!dto.AirlineId.HasValue)
+                ModelState.AddModelError("Aerolinea", "Es un campo requerido");
+
+            if (!dto.AirportId.HasValue)
+                ModelState.AddModelError("Avion", "Es un campo requerido");
+
+
             var existsAirport = _context.Airports.Any(p => p.Id == dto.AirportId);
             var existsAirline = _context.Airlines.Any(p => p.Id == dto.AirlineId);
 
             if(!existsAirline || ! existsAirport)
                 return NotFound();
 
-            if(!AirlineAirport.ValidarDuplicadoDeRegistro(_context, dto.AirlineId, dto.AirportId))
+            if(!AirlineAirport.ValidarDuplicadoDeRegistro(_context, dto.AirlineId.Value, dto.AirportId.Value))
             {
                 ModelState.AddModelError("Error", "Ya este registro existe");
                 return BadRequest(ModelState);
             }
 
-            var record = _mapper.Map<AirlineAirport>(dto);
-            record.Airline = null;
-            record.Airport = null;
-
+            var record =  new AirlineAirport { AirportId = dto.AirportId, AirlineId = dto.AirlineId };
             await _context.AirlineAirport.AddAsync(record);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Post), new { dto.AirlineId, dto.AirportId }, record);
