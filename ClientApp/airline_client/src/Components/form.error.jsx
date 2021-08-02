@@ -1,16 +1,16 @@
 import {uuidv4} from '../utils/methods';
-import { Redirect } from 'react-router';
 
 
 
 export default function FormError(props) {
-  if(props.formerrorobj == null) {
+  console.log(props.formerrorobj);
+  if(props.formerrorobj === null) {
     return <></>
   } else if (props.formerrorobj.rawerror) {
     return <> {BuildErros(props.formerrorobj.errors)}</>;
-  // } else if (props.formerrorobj?.request?.status == 404) {
+  // } else if (props.formerrorobj?.request?.status === 404) {
   //   return <> <Redirect to={"/error_page/404"}/> </>;
-  } else if (props.formerrorobj?.request?.status == 400) {
+  } else if (props.formerrorobj?.request?.status === 400) {
     let errors = props.formerrorobj.response.data;
     return <> {BuildErros(errors)}</>;
   } else {

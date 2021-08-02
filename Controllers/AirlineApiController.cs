@@ -102,17 +102,17 @@ namespace AireLineTicketSystem.Controllers
 
         // DELETE api/<AirportContorller>/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int airportid)
+        public async Task<ActionResult> Delete(int id)
         {
             var record = await _context.Airlines
                             .Include(p => p.Terminals)
                             .Include(p => p.AirlineAirport)
                             .Include(p => p.Gates)
-                            .Include(p => p.BagPriceMaster)
-                            .ThenInclude(p => p.BagPriceDetails)
-                            .FirstOrDefaultAsync(x => x.Id == airportid);
+                            //.Include(p => p.BagPriceMaster)
+                            //.ThenInclude(p => p.BagPriceDetails)
+                            .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (record != null)
+            if (record == null)
             {
                 return NotFound();
             }
@@ -142,8 +142,8 @@ namespace AireLineTicketSystem.Controllers
 
 
                 _context.SetIsDelete(record.Airplanes.Cast<Entity>().ToList());
-                _context.SetIsDelete(record.BagPriceMaster);
-                _context.SetIsDelete(record.BagPriceMaster.BagPriceDetails.Cast<Entity>().ToList());
+                //_context.SetIsDelete(record.BagPriceMaster);
+                //_context.SetIsDelete(record.BagPriceMaster.BagPriceDetails.Cast<Entity>().ToList());
 
                 await _context.SaveChangesAsync();
 

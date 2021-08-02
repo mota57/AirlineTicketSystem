@@ -21,7 +21,9 @@ namespace AireLineTicketSystem.Infraestructure
             CreateMap<AirportCreateDTO, Airport>();
 
             CreateMap<Terminal, TerminalDTO>()
-                .ReverseMap();
+                .ForMember(p => p.AirlineName, (p) => p.MapFrom(x => x.Airline.Name));
+
+            CreateMap<TerminalDTO, Terminal>();
 
             CreateMap<Airline, AirlineDTO>()
                 .ReverseMap();
@@ -37,7 +39,12 @@ namespace AireLineTicketSystem.Infraestructure
                  .ForMember(p => p.AirportId, (p) => p.MapFrom(x => x.AirportId))
                  .ForMember(p => p.AirlineName, (p) => p.MapFrom(x => x.Airline.Name))
                 .ReverseMap();
+            
+            CreateMap<BagPriceMaster, BagPriceMasterDTO>()
+                .ForMember(p => p.Details, (p) => p.MapFrom(x => x.BagPriceDetails))
+                .ReverseMap();
 
+            CreateMap<BagPriceDetail, BagPriceDetailDTO>();
         }
     }
 

@@ -10,6 +10,7 @@ namespace AireLineTicketSystem.Entities
         public int Id { get;set;}
         public int AirlineId { get;set;}
         public Airline Airline { get;set;}
+        public decimal PercentOfIncreaseAfterMaxPound { get;set; } //percentage
         public List<BagPriceDetail> BagPriceDetails = new List<BagPriceDetail>();
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

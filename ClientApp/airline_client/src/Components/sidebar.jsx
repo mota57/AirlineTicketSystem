@@ -22,10 +22,10 @@ export default function SideBarComponent(props) {
 
   function handleSetActive(index) {
     let menuUpdated = menuSidebar.map((el, i) => {
-      if (i == index) {
+      if (i === index) {
         localStorage.setItem('sidebarid', i);
         return Object.assign({}, el, { isActive: true });
-      } else if (el.isActive == true) {
+      } else if (el.isActive === true) {
         return Object.assign({}, el, { isActive: false });
       } else {
         return el;
@@ -54,7 +54,7 @@ export default function SideBarComponent(props) {
           <li className="nav-item" onClick={() => handleSetActive(i)} key={uuidv4()}>
             <Link
               to={m.url}
-              className={`nav-link  ${m.isActive == true ? "active" : ""}`}
+              className={`nav-link  ${m.isActive === true ? "active" : ""}`}
               aria-current="page"
             >
               <svg className="bi me-2" width="16" height="16">

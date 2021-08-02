@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import apiUrls from "../../utils/endpoints";
 
-import { Link, Redirect, useParams } from "react-router-dom";
+import { Link, useParams,useRouteMatch } from "react-router-dom";
 import { ModalDelete } from "../app.modals";
 
 export default function AirportAirlineIndex(props) {
@@ -20,8 +20,8 @@ export default function AirportAirlineIndex(props) {
    *    />
    */
 
-  let { airportid } = useParams();
-  
+  let { recordid } = useParams();
+  let {  url } = useRouteMatch();
 
 
  function AirportAirlineVM(data) {
@@ -38,7 +38,7 @@ export default function AirportAirlineIndex(props) {
 
   function loadAirlines() {
     axios
-      .get(`${apiUrls.airline_airport.airlinesByAirportid}/${airportid}`)
+      .get(`${apiUrls.airline_airport.airlinesByAirportid}/${recordid}`)
       .catch((e) => {
         alert("sorry an error occurred");
         console.error("loadAirlines ", e);
@@ -49,14 +49,12 @@ export default function AirportAirlineIndex(props) {
   }
 
 
-  function handleDelete(airlineid) {
-    if (isNaN(airlineid) || Number(airlineid) < 0) {
-      throw new Error("airline id not pass");
-    }
+  function handleDelete(airlineAirportId) {
+   
 
     axios
       .delete(
-        `${apiUrls.airline_airport.url}?airlineid=${airlineid}&airportid=${airportid}`
+        `${apiUrls.airline_airport.delete}/${airlineAirportId}`
       )
       .catch((e) => {
         console.error(e);
@@ -75,8 +73,6 @@ export default function AirportAirlineIndex(props) {
     setState({...state, ...objectUpdate});
   }
 
-
-
   return (
     <div className="container m-top-1">
       <ModalDelete
@@ -87,7 +83,7 @@ export default function AirportAirlineIndex(props) {
 
       <div>
         <Link
-          to={`/airport_airlines/form?airportId=${airportid}&airlineId=0`}
+          to={`${url}/form/0`}
           className="btn btn-primary"
         >
           Agregar
@@ -111,8 +107,9 @@ export default function AirportAirlineIndex(props) {
               <td>
                 <div style={{ width: "200px" }}>
 
+
                 <Link
-                    to={`/airport_airlines/form?airportId=${airportid}&airlineId=${dto.airlineId}&id=${dto.id}` }
+                    to={`${url}/form/${dto.id}` }
                     className="btn btn-primary m-r-1-sm"
                   >
                     Editar

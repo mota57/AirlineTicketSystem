@@ -1,8 +1,6 @@
 const apiUrl = process.env.REACT_APP_APP_URL
 
-
-
-var apiUrls = {
+const endpoints = {
     airport: {
         url: `${apiUrl}/airportapi`,
         getbyid: `${apiUrl}/airportapi/getbyid`,
@@ -22,10 +20,31 @@ var apiUrls = {
     airline_airport: {
         url:`${apiUrl}/AirportAirlineApi`,
         airlinesByAirportid:`${apiUrl}/AirportAirlineApi/GetAirlinesByAirportId`,
-        getAirlinesToSelect:`${apiUrl}/AirportAirlineApi/GetAirlinesToSelect`
+        getAirlinesToSelect:`${apiUrl}/AirportAirlineApi/GetAirlinesToSelect`,
+        delete:`${apiUrl}/AirportAirlineApi/DeleteAirlineAirport`,
+    },
+    gate: () => {
+        let url = `${apiUrl}/gateapi`;
+        return {
+            url,
+            getbyid:`${url}/getbyid`,
+        }
+    },
+    terminal: () => {
+        let url = `${apiUrl}/TerminalApi`;
+        return {
+            url,
+            getbyid:`${url}/getbyid`,
+            getAirlines:`${url}/GetAirlinesForTerminalsToSelect`
+        }
+    },
+    bagPrice: () => {
+        let url = `${apiUrl}/bagpriceapi`;
+        return {
+            getByAirlineId: (airlineid) => `${url}/getByAirlineId/${airlineid}`,
+        }
     }
 }
 
 
-
-export default apiUrls;
+export default  endpoints;

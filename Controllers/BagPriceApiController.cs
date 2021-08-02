@@ -42,6 +42,39 @@ namespace AireLineTicketSystem.Controllers
             return _mapper.Map<BagPriceMasterDTO>(result);
         }
 
+        //[HttpPost]
+        //public async Task<ActionResult<BagPriceMasterDTO>> Post(BagPriceMasterDTO dto)
+        //{
+        //    var recordMapped = _mapper.Map<BagPriceMaster>(dto);
+
+        //    if (TryValidateModel(recordMapped))
+        //    {
+        //        _context.Add(recordMapped);
+        //        await _context.SaveChangesAsync();
+        //    }
+
+        //    return BadRequest(ModelState);
+        //}
+
+
+
+        //[HttpPost]
+        //public async Task<ActionResult<BagPriceMasterDTO>> Put(BagPriceMasterDTO dto)
+        //{
+        //    var recordDb = _context.BagPriceMasters.Include(p => p.BagPriceDetails).FirstOrDefault(x => x.Id == dto.Id);
+
+        //    if(recordDb == null) return NotFound();
+
+        //    var recordMapped = _mapper.Map<BagPriceMaster>(dto);
+
+        //    if (TryValidateModel(recordMapped))
+        //    {
+        //        _context.Add(recordMapped);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    return BadRequest(ModelState);
+        //}
+
 
 
         //[HttpPost("AddOrUpdateBagPrice")]
@@ -50,9 +83,9 @@ namespace AireLineTicketSystem.Controllers
 
         //    var recordDb = dto.Id == 0 ? null : _context.BagPriceMasters.Include(p => p.BagPriceDetails).FirstOrDefault(x => x.Id == dto.Id);
         //    var recordMapped = _mapper.Map<BagPriceMaster>(dto);
-            
+
         //    this.TryValidateModel(recordMapped);
-            
+
         //    if (recordDb == null)
         //    {
         //        _context.Add(recordMapped);
@@ -61,7 +94,7 @@ namespace AireLineTicketSystem.Controllers
         //    {
         //        _context.Entry(recordDb).CurrentValues.SetValues(recordMapped);
 
-            
+
         //        foreach (var detail in recordMapped.BagPriceDetails)
         //        {
         //            var existingDetailRecordDb = recordDb.BagPriceDetails.FirstOrDefault(p => p.Id == detail.Id);

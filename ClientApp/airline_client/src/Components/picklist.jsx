@@ -10,7 +10,9 @@ import { Form } from "react-bootstrap";
  *  MUST PASS FIELD NAME OTHERWISE IS NOT GOING TO WORK
  *  <Picklist 
               recordid={state.airlineId}
-              fieldName="airlineId" 
+              fieldName={<propertyName>}
+              fieldValue={<propertyValue>}
+              formName="airlineId" 
               label="Aerolinea" 
               url={`${apiUrls.airline.url}`} 
               handleOnChange={changeHandler}
@@ -18,59 +20,52 @@ import { Form } from "react-bootstrap";
               />
  */
 export default function Picklist(props) {
-  const [state, setState] = useState({ 
-    records: [], 
-    recordId: props.recordid ? props.recordid : -1
+  const [state, setState] = useState({
+    records: [],
+    recordId: props.recordid ? props.recordid : -1,
   });
-
-  useEffect(() => {
-    
-      setState({ ...state, recordId: props.recordid });
-    
-  },[props.recordid]);
-
 
   useEffect(() => {
     axios
       .get(props.url)
       .catch((e) => console.error(e))
       .then((data) => {
-          logInfo("data from get url picklist::", data.data);
-          setState({ ...state, records: data.data, recordId: props.recordid});
+        logInfo("data from get url picklist::", data.data);
+        setState({ ...state, records: data.data, recordId: props.recordid });
       });
-  }, []);
-
-
-
+    }, []);
+    
+  logInfo("state::", state);
+  
   function logInfo(label, data) {
     if (props.logConsole) {
       console.log(label, data);
     }
   }
-  console.log('state::', state);
 
   return (
     <>
       <label className="form-label">
-        {props.label} {state.recordId}
+        {props.label} 
       </label>
       <Form.Control
         as="select"
-        name={props.fieldName}
+        name={props.formName}
         value={state.recordId}
-       
         onChange={(e) => {
-          setState({ ...state,  recordId: Number(e.target.value) });
+          setState({ ...state, recordId: Number(e.target.value) });
           props.handleOnChange(e);
         }}
       >
-           <option value="-1" key="-1">ninguno</option>
+        <option value="-1" key="-1">
+          ninguno
+        </option>
         {state.records.map((r) => (
           <option 
-            value={r.id} 
+            value={props.fieldValue ? r[props.fieldValue] : r.id} 
             key={r.id}
             >
-            {r.name}
+            {props.fieldName ? r[props.fieldName] : r.name}
           </option>
         ))}
       </Form.Control>

@@ -2,12 +2,25 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import apiUrls from "../utils/endpoints";
 import CountryPicklist from "./country.picklist";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect, useParams } from "react-router-dom";
 import FormError from './form.error';
 import {changeHandlerBuilder} from '../utils/methods';
 
-export default function AirportFormComponent(props) {
-  const location = useLocation();
+
+export function AirportCreateComponent(props) {
+   return ( <AirportFormComponent recordid="0" redirect="/airport" />)
+}
+
+export function AirportEditComponent(props) {
+  const { recordid } = useParams();
+  return ( <AirportFormComponent recordid={recordid} redirect={`/airport/details/${recordid}`} />)
+}
+
+
+export function AirportFormComponent(props) {
+ 
+  let recordid = props.recordid;
+
   const [record, setRecord] = useState( {
     name:'',
     isActive:true,
@@ -15,12 +28,9 @@ export default function AirportFormComponent(props) {
     countryId:-1
   })
 
-  const recordid = location?.state?.recordid || 0;
   const [shouldRedirect, setRedirect] = useState(false);
   const [formErrorObj,  setFormErrorObj] = useState(null);
   
-  console.log('location', location);
-  console.log('recordid', recordid);
 
   const  changeHandler = changeHandlerBuilder(setRecord , record);
  
@@ -45,7 +55,7 @@ export default function AirportFormComponent(props) {
   function onSubmit(e) {
     e.preventDefault();
     //why I put this?
-    if(record.countryId == null || record.countryId <= 0) {
+    if(record.countryId === null || record.countryId <= 0) {
       setFormErrorObj({ rawerror: true, errors:{'Country': ['Este campo es requerido']}})
       return;
     }
@@ -70,7 +80,8 @@ export default function AirportFormComponent(props) {
   }
 
   if (shouldRedirect) {
-    let url = recordid != null && recordid > 0 ? `/airport/dashboard/${recordid}`: `/airport`;
+    // let url = recordid != null && recordid > 0 ? `/airport/details/${recordid}`: `/airport`;
+    let url = props.redirect;
     return <Redirect to={url} />;
   }
   

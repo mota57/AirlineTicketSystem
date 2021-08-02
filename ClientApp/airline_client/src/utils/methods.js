@@ -1,10 +1,10 @@
-import axios from "axios";
+// import axios from "axios";
 
 export function changeHandlerBuilder(setRecord, record) {
   const changeHandler = (e, booleanValue) => {
     var val = e.target.value;
     console.log('changeHandlerBuilder',e);
-    if (e.target.nodeName == "SELECT") {
+    if (e.target.nodeName === "SELECT") {
       val = Number(val);
     }
     setRecord({
@@ -42,7 +42,7 @@ export class FormRawErrorHelper {
 
     constructor() {
 
-        this.formErrorObj = {
+        this.rawObj = {
             rawerror: true,
             errors: {  
             }
@@ -50,13 +50,15 @@ export class FormRawErrorHelper {
     }
     
     pushError(key, message) {
-        if(this.formErrorObj.errors.hasOwnProperty(key)) {
-            this.formErrorObj.errors[key].push(message);
+        if(this.rawObj.errors.hasOwnProperty(key)) {
+            this.rawObj.errors[key].push(message);
         } else {
-            this.formErrorObj.errors[key] = [message];
+            this.rawObj.errors[key] = [message];
         }
     }
 
-    hasErrors()  { return Object.keys(this.formErrorObj.errors).length > 0 }
+    hasErrors()  { return Object.keys(this.rawObj.errors).length > 0 }
 
 }
+
+

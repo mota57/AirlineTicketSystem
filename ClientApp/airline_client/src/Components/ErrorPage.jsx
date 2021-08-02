@@ -3,7 +3,7 @@ import { useParams} from 'react-router-dom';
 export default function ErrorPage() {
     var {status} = useParams();
     
-    if(status == 404) {
+    if(status === 404) {
         return (<> 
             <h1>Recurso no encontrado.</h1>
         </>)

@@ -41,8 +41,10 @@ namespace AireLineTicketSystem.Infraestructure.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string AirlineName { get;set;}
         public int AirportId { get; set; }
         public int? AirlineId { get; set; }
+        public bool IsActive { get;set;}
     }
 
     public class AirlineDTO
@@ -83,15 +85,18 @@ namespace AireLineTicketSystem.Infraestructure.Model
     {
         public int Id { get; set; }
         public int AirlineId { get; set; }
-        public List<BagPriceDetailDTO> BagPriceDetailDTOs { get;set;}
+        public decimal PercentOfIncreaseAfterMaxPound { get; set; } //percentage
+        public List<BagPriceDetailDTO> Details { get;set;}
     }
 
     public class BagPriceDetailDTO
     {
         public int Id { get; set; }
+        public decimal Price { get; set; }
         public decimal PoundStart { get; set; }
         public decimal? PoundEnd { get; set; }
         public int BagPriceMasterId { get; set; }
+        public bool IsActive { get; set; }
     }
 
 

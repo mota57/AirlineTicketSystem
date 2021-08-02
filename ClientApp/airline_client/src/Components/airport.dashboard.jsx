@@ -1,10 +1,12 @@
 import { useEffect,useState } from "react";
-import { Link, useLocation, useParams} from "react-router-dom"
+import { Link,  useParams, Route, Switch, useRouteMatch} from "react-router-dom"
 import axios from 'axios';
 import apiUrls from '../utils/endpoints';
+import RouteAirportConfig from "../route.airport.config";
+
 export default function AirportDashboard(props) {   
     var { recordid } = useParams();
-
+    let { path } = useRouteMatch();
     const [record, setRecord] = useState( {
       name:'',
       isActive:true,
@@ -22,69 +24,93 @@ export default function AirportDashboard(props) {
         countryId:data.data.countryId
       }))
     }, [])
-    return(
-        <>
-  <h1>{record.name}</h1>
-<div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
-      <div className="col d-flex align-items-start">
-        <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#bootstrap"></use></svg>
-        <div>
-          {/* <h4 className="fw-bold mb-0">Datos</h4> */}
-          <Link className="btn btn-primary" 
-          to={{ pathname:`/airport/form/${recordid}`, state: { recordid:recordid }} }>Datos</Link>
+
+    return (
+      <div style={{backgroundColor:"#ebedef"}}>
+        
+        <div className="align-items-center border-bottom d-flex flex-md-nowrap flex-wrap justify-content-between mb-3 pb-2 pt-3">
+          <h1 className="h2"><Link to={`/airport/details/${recordid}`}>{record.name}</Link></h1>
         </div>
+
+          <Switch>
+            {RouteAirportConfig.map((r) => (
+                <Route key={r.path} path={`${path}${r.path}`} exact={r.exact}>
+                  <r.componente></r.componente>
+                </Route>
+              ))}
+              <Route exact path={path}>
+              <DashboardMenu airportid={recordid} />
+            </Route>
+          </Switch>
       </div>
-       <div className="col d-flex align-items-start">
-        <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#cpu-fill"></use></svg>
-        <div>
-          {/* <h4 className="fw-bold mb-0">Aerolineas</h4> */}
-          <Link className="btn btn-primary" 
-          to={`/airport_airlines/${recordid}`}>Aerolineas</Link>
-        </div>
-      </div>
-     {/* <div className="col d-flex align-items-start">
-        <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#calendar3"></use></svg>
-        <div>
-          <h4 className="fw-bold mb-0">Featured title</h4>
-          <p>Paragraph of text beneath the heading to explain the heading.</p>
-        </div>
-      </div>
-      <div className="col d-flex align-items-start">
-        <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#home"></use></svg>
-        <div>
-          <h4 className="fw-bold mb-0">Featured title</h4>
-          <p>Paragraph of text beneath the heading to explain the heading.</p>
-        </div>
-      </div>
-      <div className="col d-flex align-items-start">
-        <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#speedometer2"></use></svg>
-        <div>
-          <h4 className="fw-bold mb-0">Featured title</h4>
-          <p>Paragraph of text beneath the heading to explain the heading.</p>
-        </div>
-      </div>
-      <div className="col d-flex align-items-start">
-        <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#toggles2"></use></svg>
-        <div>
-          <h4 className="fw-bold mb-0">Featured title</h4>
-          <p>Paragraph of text beneath the heading to explain the heading.</p>
-        </div>
-      </div>
-      <div className="col d-flex align-items-start">
-        <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#geo-fill"></use></svg>
-        <div>
-          <h4 className="fw-bold mb-0">Featured title</h4>
-          <p>Paragraph of text beneath the heading to explain the heading.</p>
-        </div>
-      </div>
-      <div className="col d-flex align-items-start">
-        <svg className="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlinkHref="#tools"></use></svg>
-        <div>
-          <h4 className="fw-bold mb-0">Featured title</h4>
-          <p>Paragraph of text beneath the heading to explain the heading.</p>
-        </div>
-      </div> */}
-    </div>
-        </>
     )
+}
+
+
+function DashboardMenu ({airportid}) {
+  const pathUrl = `/airport/details/${airportid}`
+  var options = [
+    {
+      icon: "fa fa-window-maximize",
+      label: "Datos Basicos",
+      url: `${pathUrl}/edit`,
+      labelUrl: "Editar",
+      stateUrl: { airportid },
+    },
+
+    {
+      icon: "fa fa-plane",
+      label: "Aerolineas",
+      url: `${pathUrl}/airport_airlines/${airportid}`,
+      stateUrl: { airportid },
+      labelUrl: "Acceder",
+    },
+
+    {
+      icon: "fa fa-flag",
+      label: "Puertas Embarque/Desembarque",
+      url: `${pathUrl}/gate`,
+      stateUrl: { airportid },
+      labelUrl: "Acceder",
+    },
+    {
+      icon: "fa fa-taxi",
+      label: "Terminales",
+      url: `${pathUrl}/terminal`,
+      stateUrl: { airportid },
+      labelUrl: "Acceder",
+    },
+  ];
+
+
+  return (
+    <div >
+      <div className="row">
+        {options.map((menu) => (
+          <div className="col-sm-4 m-b-1" key={menu.url}>
+            <div className="card">
+              <div className="card-body">
+                <label className="card-title">
+                  <i
+                    className={` ${ menu.icon ? menu.icon : "fa fa-window-maximize"} bi text-muted flex-shrink-0 me-3`}
+                    style={{ fontSize: "30px" }}
+                  ></i>
+                  {menu.label}
+                </label>
+                <br/>
+                <Link  className="btn btn-primary"
+                   to={{
+                    pathname: [menu.url],
+                    state: { ...menu.stateUrl },
+                  }}
+                >
+                  {menu.labelUrl}
+                </Link>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

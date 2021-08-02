@@ -8,3 +8,30 @@
    var errorFields = errorBuilder("Aerolinea", state)
         .isTrue((e) => e.aerlineaId == null || e.aerlineaId <= 0, "Este campo es requerido")
         .isTrue((e) => e.aerlineaId == null || e.aerlineaId <= 0, "Este campo es requerido")
+
+
+        
+ <div className="form-check m-top-1">
+            <input
+              checked={record.isActive}
+              type="checkbox"
+              className="form-check-input"
+              value={record.isActive || false}
+              name="isActive"
+              onChange={(e) => changeHandler(e, record.isActive)}
+              id="active"
+            />
+            <label className="form-check-label" htmlFor="#active">
+              Activo 
+            </label>
+          </div>
+
+
+           <Picklist
+              recordid={state.airlineId}
+              fieldName="airlineId"
+              label="Aerolinea"
+              url={`${apiUrls.airline_airport.getAirlinesToSelect}/${state.airportId}`}
+              handleOnChange={changeHandler}
+              logConsole={true}
+            />

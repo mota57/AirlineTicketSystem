@@ -22,7 +22,7 @@ export default function AirportComponent(props) {
   }
 
   if (recordid >= 0) {
-    return <Redirect to={{pathname:`/airport/dashboard/${recordid}`, state: { recordid }}} />;
+    return <Redirect to={{pathname:`/airport/details/${recordid}`, state: { recordid }}} />;
   }
 
 

@@ -62,7 +62,7 @@ export default function AirplaneComponent(props) {
 
   if (isNaN(airlineid) ||  Number(airlineid) <= 0) {
     return (
-      <div class="alert alert-danger">
+      <div className="alert alert-danger">
         Recurso no encontrado
         <Link to="/airline"> Ir a aerolineas</Link>
       </div>

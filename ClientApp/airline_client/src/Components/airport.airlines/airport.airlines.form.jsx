@@ -1,37 +1,43 @@
 import { useState } from "react";
 import { changeHandlerBuilder, UrlSearchExtension, FormRawErrorHelper } from "../../utils/methods";
 import { Form } from "react-bootstrap";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect, useParams } from "react-router-dom";
 import FormError from "../form.error";
 import apiUrls from "../../utils/endpoints";
 import Picklist from "../picklist";
 import axios from "axios";
 
 export default function AirportAirlineForm(props) {
-  var urlSearch = new UrlSearchExtension(useLocation().search);
+ 
 
-  const id = urlSearch.getNumberParam("id");
-  const isCreate = id == null || id <= 0 ? true : false;
-  const airlineId = urlSearch.getNumberParam("airlineId");
-  
-  const airportId = urlSearch.getNumberParam("airportId");
+  const { recordid , id } = useParams();
+
+
+  const isCreate = id === null || id <= 0 ? true : false;
   
   const [redirectTo, setRedirect] = useState(null);
-  console.log("id::", id);
+ 
+  let airportId = recordid;
 
   const [state, setState] = useState({
+    id,
     airportName: "LOADING",
-    airlineId,
+    airlineId: -1,
     airportId,
     formErrorObj: null,
   });
 
+
+
   useState(() => {
     //load airport content
-    axios
-      .get(`${apiUrls.airport.getbyid}/${airportId}`)
-      .catch(() => setRedirect())
-      .then((data) => setState({ ...state, airportName: data.data.name })); 
+    // if(!isCreate) {
+
+    //   axios
+    //   .get(`${apiUrls.airport.getbyid}/${state.airportId}`)
+    //   .catch(() => setRedirect())
+    //   .then((data) => setState({ ...state, airportName: data.data.name })); 
+    // }
   }, []);
 
   function onSubmit(e) {
@@ -39,7 +45,7 @@ export default function AirportAirlineForm(props) {
     
     var formError = new FormRawErrorHelper();
   
-    if (state.airlineId == null || state.airlineId <= 0) {
+    if (state.airlineId === null || state.airlineId <= 0) {
       formError.pushError("Aerolinea", "Este campo es requerido");
     }
 
@@ -72,11 +78,14 @@ export default function AirportAirlineForm(props) {
     }
   }
 
-  function redirectToIndex() {
-    setRedirect(`/airport_airlines/${state.airportId}`);
-  }
 
   const changeHandler = changeHandlerBuilder(setState, state);
+
+  
+  function redirectToIndex() {
+    setRedirect(`/airport/details/${airportId}/airport_airlines`);
+  }
+
 
   if (redirectTo) {
     return <Redirect to={redirectTo} />;
@@ -91,7 +100,7 @@ export default function AirportAirlineForm(props) {
         <FormError formerrorobj={state.formErrorObj} />
 
         <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
-          <Form.Group className="mb-3" controlId="airportId">
+          {/* <Form.Group className="mb-3" controlId="airportId">
             <Form.Label>Aeropuerto</Form.Label>
             <Form.Control
               type="text"
@@ -99,11 +108,11 @@ export default function AirportAirlineForm(props) {
               value={state.airportName}
             />
           </Form.Group>
-      
+       */}
           <div className="form-group m-top-1">
             <Picklist
               recordid={state.airlineId}
-              fieldName="airlineId"
+              formName="airlineId"
               label="Aerolinea"
               url={`${apiUrls.airline_airport.getAirlinesToSelect}/${state.airportId}`}
               handleOnChange={changeHandler}

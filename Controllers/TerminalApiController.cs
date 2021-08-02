@@ -33,7 +33,9 @@ namespace AireLineTicketSystem.Controllers
         public IEnumerable<TerminalDTO> Get(int airportId)
         {
             return _mapper.Map<List<TerminalDTO>>(
-                _context.Terminals.Where(p => p.AirportId == airportId).ToList()
+                _context.Terminals
+                .Include(p => p.Airline)
+                .Where(p => p.AirportId == airportId).ToList()
            );
         }
 
@@ -59,6 +61,8 @@ namespace AireLineTicketSystem.Controllers
             }
 
             var record = _mapper.Map<Terminal>(dto);
+            record.Airline = null;
+            record.Airport = null;
             if (this.TryValidateModel(record))
             {
                 await _context.Terminals.AddAsync(record);
@@ -78,11 +82,14 @@ namespace AireLineTicketSystem.Controllers
                 return NotFound();
 
             var record = _mapper.Map<Terminal>(dto);
+            record.Airline = null;
+            record.Airport = null;
             if (this.TryValidateModel(record))
             {
                 var recordDb = await _context.Terminals.FindAsync(id);
                 recordDb.Name = record.Name;
                 recordDb.IsActive = record.IsActive;
+                recordDb.AirlineId = record.AirlineId;
                 _context.Update(recordDb);
                 await _context.SaveChangesAsync();
             }

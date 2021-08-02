@@ -26,16 +26,22 @@ namespace AireLineTicketSystem.Controllers
             _mapper = mapper;
         }
 
+
+        /// <summary>
+        /// Lista de aerolineas que puede asociarse en un aeropuerto, excluye la que ya estan asociadas.
+        /// </summary>
+        /// <param name="airportid"></param>
+        /// <returns></returns>
         [HttpGet("GetAirlinesToSelect/{airportid:int}")]
         public async Task<IEnumerable<AirlineDTO>> GetAirlinesToSelect(int airportid)
         {
             var airlinesIds =  await _context.AirlineAirport
-                .Where(aa => aa.AirportId == airportid)
+                .Where(aa => aa.AirportId == airportid && aa.IsDeleted == false)
                 .Select(p => p.AirlineId)
                 .ToListAsync();
 
             var airlinesToSelect=  await _context.Airlines
-                .Where(airline => !airlinesIds.Contains(airline.Id))
+                .Where(airline => airline.IsDeleted == false && !airlinesIds.Contains(airline.Id))
                 .Select(p => new AirlineDTO { Id = p.Id, Name = p.Name})
                 .ToListAsync();
 
@@ -124,10 +130,10 @@ namespace AireLineTicketSystem.Controllers
         }
 
 
-        [HttpDelete()]
-        public async Task<ActionResult> Delete([FromQuery] int airportid, [FromQuery] int airlineid)
+        [HttpDelete("DeleteAirlineAirport/{id:int}")]
+        public async Task<ActionResult> DeleteAirlineAirport(int id)
         {
-            var record = await _context.AirlineAirport.FirstOrDefaultAsync(p => p.AirlineId == airlineid && p.AirportId == airportid);
+            var record = await _context.AirlineAirport.FirstOrDefaultAsync(p => p.Id == id);
             if (record == null)
                 return NotFound();
             _context.SetIsDelete(record);

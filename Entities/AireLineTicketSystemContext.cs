@@ -23,24 +23,19 @@ namespace AireLineTicketSystem.Entities
         public DbSet<Country> Countries { get; set; }
         public DbSet<Terminal> Terminals { get; set; }
         public DbSet<Airline> Airlines { get; set; }
-
         public DbSet<BagPriceMaster> BagPriceMasters { get; set; }
         public DbSet<BagPriceDetail> BagPriceDetails { get; set; }
-
         public DbSet<Airplane> Airplanes { get; set; }
         public DbSet<Airport> Airports { get; set; }
         public DbSet<Gate> Gates { get; set; }
         public DbSet<Passenger> Passengers { get; set; }
         public DbSet<Flight> Flights { get; set; }
         public DbSet<FlightPrice> FlightPrices { get; set; }
-        
         public DbSet<AirlineAirport> AirlineAirport { get; set; }
-        
         public DbSet<FlightBagPayment> FlightBagPayment { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           
             RestrictAll(modelBuilder);
             SetCountrySeedData(modelBuilder);
             SetAirLineAirportConfiguration(modelBuilder);
@@ -129,14 +124,17 @@ namespace AireLineTicketSystem.Entities
             modelBuilder.Entity<Country>().HasData(countries);
         }
 
-
         public void SetIsDelete( Entity record)
-        {
+        {   
+             if(record == null)
+                return;
              SetIsDelete( new List<Entity> { record });
         }
 
         public void SetIsDelete( List<Entity> records)
         {
+            if (records == null)
+                return;
             foreach (var record in records)
             {
                 record.IsDeleted = true;
