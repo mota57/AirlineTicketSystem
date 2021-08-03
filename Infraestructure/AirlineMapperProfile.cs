@@ -44,7 +44,7 @@ namespace AireLineTicketSystem.Infraestructure
                 .ForMember(p => p.Details, (p) => p.MapFrom(x => x.BagPriceDetails))
                 .ReverseMap();
 
-            CreateMap<BagPriceDetail, BagPriceDetailDTO>();
+            CreateMap<BagPriceDetail, BagPriceDetailDTO>().ReverseMap();
         }
     }
 

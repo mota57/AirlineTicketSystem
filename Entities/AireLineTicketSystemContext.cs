@@ -70,6 +70,7 @@ namespace AireLineTicketSystem.Entities
             builder.Entity<FlightBagPayment>().HasQueryFilter(p => !p.IsDeleted);
         }
 
+    
         public void SetAirLineAirportConfiguration(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<AirlineAirport>()
@@ -89,6 +90,9 @@ namespace AireLineTicketSystem.Entities
             .IsRequired(false);
 
         }
+
+
+
 
         public void RestrictAll(ModelBuilder modelBuilder)
         {
@@ -112,6 +116,13 @@ namespace AireLineTicketSystem.Entities
             }
         }
 
+
+        public void SetIsModifiedFalse<T>(T record, params string[] properties)
+        {
+            foreach (var prop in properties) { this.Entry(record).Property(prop).IsModified = false; }
+        }
+
+
         public void SetCountrySeedData(ModelBuilder modelBuilder)
         {
             var countriesJson = System.IO.File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "countries.json"));
@@ -124,11 +135,11 @@ namespace AireLineTicketSystem.Entities
             modelBuilder.Entity<Country>().HasData(countries);
         }
 
-        public void SetIsDelete( Entity record)
-        {   
-             if(record == null)
+        public void SetIsDelete(Entity record)
+        {
+            if (record == null)
                 return;
-             SetIsDelete( new List<Entity> { record });
+            SetIsDelete(new List<Entity> { record });
         }
 
         public void SetIsDelete( List<Entity> records)

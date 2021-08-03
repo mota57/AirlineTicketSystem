@@ -4,14 +4,16 @@ using AireLineTicketSystem.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AireLineTicketSystem.Migrations
 {
     [DbContext(typeof(AireLineTicketSystemContext))]
-    partial class AireLineTicketSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20210803083914_addColumnPercentageBagPriceMaster")]
+    partial class addColumnPercentageBagPriceMaster
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,10 +182,7 @@ namespace AireLineTicketSystem.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AirlineAssociated")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AirlineId")
+                    b.Property<int>("AirlineId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -195,8 +194,7 @@ namespace AireLineTicketSystem.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AirlineId")
-                        .IsUnique()
-                        .HasFilter("[AirlineId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("BagPriceMasters");
                 });
@@ -1985,7 +1983,7 @@ namespace AireLineTicketSystem.Migrations
             modelBuilder.Entity("AireLineTicketSystem.Entities.BagPriceDetail", b =>
                 {
                     b.HasOne("AireLineTicketSystem.Entities.BagPriceMaster", "BagPriceMaster")
-                        .WithMany("BagPriceDetails")
+                        .WithMany()
                         .HasForeignKey("BagPriceMasterId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1998,7 +1996,8 @@ namespace AireLineTicketSystem.Migrations
                     b.HasOne("AireLineTicketSystem.Entities.Airline", "Airline")
                         .WithOne("BagPriceMaster")
                         .HasForeignKey("AireLineTicketSystem.Entities.BagPriceMaster", "AirlineId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Airline");
                 });
@@ -2190,11 +2189,6 @@ namespace AireLineTicketSystem.Migrations
                     b.Navigation("Gates");
 
                     b.Navigation("Terminals");
-                });
-
-            modelBuilder.Entity("AireLineTicketSystem.Entities.BagPriceMaster", b =>
-                {
-                    b.Navigation("BagPriceDetails");
                 });
 
             modelBuilder.Entity("AireLineTicketSystem.Entities.FlightScale", b =>

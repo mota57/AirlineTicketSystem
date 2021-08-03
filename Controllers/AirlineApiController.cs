@@ -106,10 +106,11 @@ namespace AireLineTicketSystem.Controllers
         {
             var record = await _context.Airlines
                             .Include(p => p.Terminals)
+                            .Include(p => p.Airplanes)
                             .Include(p => p.AirlineAirport)
                             .Include(p => p.Gates)
-                            //.Include(p => p.BagPriceMaster)
-                            //.ThenInclude(p => p.BagPriceDetails)
+                            .Include(p => p.BagPriceMaster)
+                            .ThenInclude(p => p.BagPriceDetails)
                             .FirstOrDefaultAsync(x => x.Id == id);
 
             if (record == null)
@@ -126,7 +127,7 @@ namespace AireLineTicketSystem.Controllers
                 
                 await _context.SaveChangesAsync();
 
-                //unlink terminals and gates
+                //unlink terminals and gates, you dont want to delete the terminals and gates.
                 foreach (var entity in record.Terminals)
                 {
                     entity.AirlineId = null;
@@ -138,12 +139,13 @@ namespace AireLineTicketSystem.Controllers
                     entity.AirlineId = null;
                     _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
                 }
+
                 await _context.SaveChangesAsync();
 
-
+               
                 _context.SetIsDelete(record.Airplanes.Cast<Entity>().ToList());
-                //_context.SetIsDelete(record.BagPriceMaster);
-                //_context.SetIsDelete(record.BagPriceMaster.BagPriceDetails.Cast<Entity>().ToList());
+                _context.SetIsDelete(record.BagPriceMaster);
+                _context.SetIsDelete(record.BagPriceMaster.BagPriceDetails.Cast<Entity>().ToList());
 
                 await _context.SaveChangesAsync();
 
@@ -151,7 +153,7 @@ namespace AireLineTicketSystem.Controllers
             }
             catch (Exception e)
             {
-                logger.LogError(e.ToString());
+                logger.LogError($"Controller: {nameof(AirlineApiController)}\nMETHOD: Delete", e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
             return NoContent();

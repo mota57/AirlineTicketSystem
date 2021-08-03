@@ -1,17 +1,12 @@
 ﻿using AireLineTicketSystem.Infraestructure.Model;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AireLineTicketSystem.Entities;
 
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-
+using System.Linq;
 
 namespace AireLineTicketSystem.Controllers
 {
@@ -35,45 +30,59 @@ namespace AireLineTicketSystem.Controllers
         {
             var result = await _context
                 .BagPriceMasters
-                .AsNoTracking()
                 .Include(p => p.BagPriceDetails)
                 .FirstOrDefaultAsync(p => p.AirlineId == airlineId);
+
+            //await _context.Entry(result).Collection(p => p.BagPriceDetails).LoadAsync();
 
             return _mapper.Map<BagPriceMasterDTO>(result);
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult<BagPriceMasterDTO>> Post(BagPriceMasterDTO dto)
-        //{
-        //    var recordMapped = _mapper.Map<BagPriceMaster>(dto);
+        [HttpPost]
+        public async Task<ActionResult<BagPriceMasterDTO>> Post(BagPriceMasterDTO dto)
+        {
+            var recordMapped = _mapper.Map<BagPriceMaster>(dto);
 
-        //    if (TryValidateModel(recordMapped))
-        //    {
-        //        _context.Add(recordMapped);
-        //        await _context.SaveChangesAsync();
-        //    }
+            if (TryValidateModel(recordMapped))
+            {
+                _context.Add(recordMapped);
+                await _context.SaveChangesAsync();
+                dto.Id = recordMapped.Id;
+                return CreatedAtAction(nameof(Post), dto, recordMapped.Id);
+            }
 
-        //    return BadRequest(ModelState);
-        //}
+            return BadRequest(ModelState);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id, [FromBody] BagPriceMasterDTO dto)
+        {
+            var record = await _context.BagPriceMasters.FirstOrDefaultAsync(p => p.Id == id);
+            if (record == null) return NotFound();
+            if (TryValidateModel(record))
+            {
+                //_context.SetIsModifiedFalse(record, "IsDeleted", "BagPriceMasterId", "IsActive");
+                //_context.Entry(record).CurrentValues.SetValues(mapped);
+                record.PercentOfIncreaseAfterMaxPound = dto.PercentOfIncreaseAfterMaxPound;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            return BadRequest(ModelState);
+        }
 
 
-
-        //[HttpPost]
-        //public async Task<ActionResult<BagPriceMasterDTO>> Put(BagPriceMasterDTO dto)
-        //{
-        //    var recordDb = _context.BagPriceMasters.Include(p => p.BagPriceDetails).FirstOrDefault(x => x.Id == dto.Id);
-
-        //    if(recordDb == null) return NotFound();
-
-        //    var recordMapped = _mapper.Map<BagPriceMaster>(dto);
-
-        //    if (TryValidateModel(recordMapped))
-        //    {
-        //        _context.Add(recordMapped);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    return BadRequest(ModelState);
-        //}
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var record = await _context.BagPriceMasters.Include(b => b.BagPriceDetails).FirstOrDefaultAsync(p => p.Id == id);
+            if (record == null) return NotFound();
+            record.AirlineAssociated = record.AirlineId.Value;
+            record.AirlineId = null;
+            _context.SetIsDelete(record);
+            _context.SetIsDelete(record.BagPriceDetails.Cast<Entity>().ToList());
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
 
 
 
@@ -93,8 +102,7 @@ namespace AireLineTicketSystem.Controllers
         //    else
         //    {
         //        _context.Entry(recordDb).CurrentValues.SetValues(recordMapped);
-
-
+        //
         //        foreach (var detail in recordMapped.BagPriceDetails)
         //        {
         //            var existingDetailRecordDb = recordDb.BagPriceDetails.FirstOrDefault(p => p.Id == detail.Id);
