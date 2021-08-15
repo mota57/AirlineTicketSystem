@@ -1,21 +1,25 @@
 import { Field, ErrorMessage } from "formik";
-
+/**
+ * 
+ * @param {label, name} param0 
+ * @returns 
+ */
 export default function FormGroupInput({
-  field,
+  name,
   label,
   placeholder = "",
   type = "text",
 }) {
   return (
     <div className="form-group">
-      {label ? <label htmlFor={field}>{label}</label> : null}
+      {label ? <label htmlFor={name}>{label}</label> : null}
       <Field
-        name={field}
+        name={name}
         className="form-control"
         placeholder={placeholder}
         type={type}
       />
-      <ErrorMessage name={field}>
+      <ErrorMessage name={name}>
         {(mensaje) => <div className="text-danger">{mensaje}</div>}
       </ErrorMessage>
     </div>

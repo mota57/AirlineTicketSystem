@@ -15,8 +15,9 @@ namespace AireLineTicketSystem.Entities
         public ICollection<Airplane> Airplanes { get; set; } = new HashSet<Airplane>();
         public ICollection<Terminal> Terminals { get; set; } = new HashSet<Terminal>();
         public ICollection<Flight> Flights { get; set; } = new HashSet<Flight>();
-        public ICollection<Gate> Gates { get; set; } = new HashSet<Gate>();
+        public ICollection<AirlineGate> AirlineGates { get; set; } = new HashSet<AirlineGate>();
+
     }
 
-   
+
 }

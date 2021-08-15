@@ -1,4 +1,5 @@
 using AireLineTicketSystem.Entities;
+using AireLineTicketSystem.Infraestructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -18,12 +19,7 @@ namespace AireLineTicketSystem
 
         public static void Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-           .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-           .Enrich.FromLogContext()
-           .WriteTo.Debug()
-           //.WriteTo.File(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs.txt"))
-           .CreateLogger();
+            Log.Logger = FactoryMethods.CreateLogger();
 
             try
             {
@@ -39,7 +35,7 @@ namespace AireLineTicketSystem
                 Log.CloseAndFlush();
             }
         }
-
+       
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)

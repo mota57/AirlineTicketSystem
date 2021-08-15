@@ -28,15 +28,27 @@ namespace AireLineTicketSystem.Controllers
             _context = context;
             _mapper = mapper;
         }
-   
 
-        // GET api/gate?name=faa&airport
+        const int LIMIT_AIRLINE_GATES = 3;
+
+        /// <summary>
+        /// Return a specific dto for a table
+        /// </summary>
+        /// <param name="airportId"></param>
+        /// <returns></returns>
         [HttpGet()]
-        public IEnumerable<GateDTO> Get(int airportId)
+        public async Task<IEnumerable<GateIndexDTO>> Get(int airportId)
         {
-            return _mapper.Map<List<GateDTO>>(_context.Gates
-                .Where(p => p.AirportId == airportId).ToList());
+            var records = await _context
+                    .Gates
+                    .Include(p => p.AirlineGates)
+                    .ThenInclude(p => p.Airline)
+                    .Where(p => p.AirportId == airportId)
+                    .ToListAsync();
+
+            return _mapper.Map<List<GateIndexDTO>>(records);
         }
+
 
         // GET api/gate/GetById/5
         [HttpGet("GetById/{id}")]
@@ -48,6 +60,25 @@ namespace AireLineTicketSystem.Controllers
             if (record == null)
                 return NotFound();
             return _mapper.Map<GateDTO>(record);
+        }
+
+        /// <summary>
+        /// This method is use in the create ticket 
+        /// </summary>
+        /// <param name="airportid"></param>
+        /// <param name="airlineid"></param>
+        /// <returns></returns>
+        [HttpGet(nameof(GetGatesByAirportAirline))]
+        public async Task<ActionResult<List<GateDTO>>> GetGatesByAirportAirline([FromQuery] int airportid, [FromQuery] int airlineid)
+        {
+            var records = await _context.AirlineGates
+                  .Include(p => p.Gate)
+                 .AsNoTracking()
+                 .Where(a => a.AirlineId == airlineid && a.AirportId == airportid && a.IsActive == true)
+                 .Select(p => p.Gate)
+                 .ToListAsync();
+
+            return _mapper.Map<List<GateDTO>>(records);
         }
 
         // POST api/gate
@@ -81,7 +112,8 @@ namespace AireLineTicketSystem.Controllers
             var record = _mapper.Map<Gate>(dto);
             if (this.TryValidateModel(record))
             {
-                var recordDb = await _context.Gates.FindAsync(id);
+                var recordDb = await _context.Gates.Include(p => p.AirlineGates).FirstOrDefaultAsync(p => p.Id == id);
+                AddOrUpdateAirlineGate(recordDb, record);
                 recordDb.Name = record.Name;
                 recordDb.IsActive = record.IsActive;
                 _context.Update(recordDb);
@@ -92,6 +124,38 @@ namespace AireLineTicketSystem.Controllers
                 return BadRequest(ModelState);
             }
             return NoContent();
+        }
+
+        /// <summary>
+        /// Only to update the airports that are going to be selected or deselected.
+        /// </summary>
+        /// <param name="recordDb"></param>
+        /// <param name="recordMapped"></param>
+        private void AddOrUpdateAirlineGate(Gate recordDb, Gate recordMapped)
+        {
+            if (recordMapped.AirlineGates != null && recordMapped.AirlineGates.Count == 0) return;
+
+            //when user select from the list and hit save
+            foreach (var airlineGate in recordMapped.AirlineGates)
+            {
+                var airlineGateFromDb = recordDb.AirlineGates.FirstOrDefault(p => p.AirlineId == airlineGate.AirlineId && p.GateId == airlineGate.GateId);
+                if (airlineGateFromDb == null)
+                {
+                    _context.AirlineGates.Add(airlineGate);
+                } else
+                {
+                    airlineGateFromDb.IsActive = true;
+                }
+            }
+
+            //when user deselect from the list and hit save
+            foreach (var airlineGate in recordDb.AirlineGates)
+            {
+                if (!recordMapped.AirlineGates.Any(p => p.AirlineId == airlineGate.AirlineId && p.GateId == airlineGate.GateId))
+                {
+                    airlineGate.IsActive = false;
+                }
+            }
         }
     }
 }

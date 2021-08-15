@@ -11,12 +11,13 @@ import SideBarComponent from "./Components/sidebar";
 function App() {
   return (
     <Router>
-      <div className=" row" style={{backgroundColor:"#ebedef"}}>
+     
         <SideBarComponent />
-          <div className="col-md-9 " >
+      <div className=" row" style={{backgroundColor:"#ebedef"}}>
+          <div className="col-md-12" style={{minHeight:"1000px"}}>
             <Switch>
             
-
+            
               {RouteConfig.map((r) => (
                 <Route key={r.path} path={r.path} exact={r.exact}>
                   <r.componente></r.componente>

@@ -14,4 +14,9 @@
 }
 
 
+input[type='datetime-local'] {
+    margin-top: 7px;
+}
+
+
 

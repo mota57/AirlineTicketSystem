@@ -5,6 +5,12 @@ using System.Threading.Tasks;
 
 namespace AireLineTicketSystem.Infraestructure.Model
 {
+    public class PickList
+    {
+        public int Id { get;set;}
+        public string Name { get;set;}
+    }
+
     public class AirportDTO
     {
         public int Id { get; set; }
@@ -79,6 +85,17 @@ namespace AireLineTicketSystem.Infraestructure.Model
         public string Name { get; set; }
         public int AirportId { get; set; }
         public bool IsActive { get; set; }
+        public List<int> AirlinesId { get;set;}
+    }
+
+
+
+    public class GateIndexDTO
+    {
+        public int Id { get;set;}
+        public string Name { get;set;}
+        public bool IsActive { get;set;}
+        public string AirlineName { get;set;}
     }
 
     public class BagPriceMasterDTO
@@ -100,4 +117,56 @@ namespace AireLineTicketSystem.Infraestructure.Model
     }
 
 
+    public class FlightDTO
+    {
+        public int Id { get;set;}
+        public int PassengerId { get;set;}
+        public List<FlightScaleDTO> flightScales {get;set; }
+    }
+
+    public class FlightCreateDTO
+    {
+        public int Id { get; set; }
+        public List<FlightScaleDTO> flightScales { get; set; }
+    }
+
+    public class FlightUpdateDTO
+    {
+        public int Id { get; set; }
+        public int PassengerId { get;set;}
+    }
+
+    public class FlightScaleDTO
+    {
+        public int Id { get;set; }
+        public string Code { get; set; }
+        public int AirportDepartureId { get; set; }
+
+        public int AirportArrivalId { get; set; }
+
+        public DateTime DepartTime { get; set; }
+        public DateTime ArrivalTime { get; set; }
+
+        public int? AirplaneId { get; set; }
+
+        public int AirlineId { get; set; }
+
+        public decimal MinPrice { get; set; }
+
+        public int? TerminalId { get; set; }
+
+        public int? GateId { get; set; }
+
+        public int FlightId { get; set; }
+
+        public decimal? TotalPaid { get; set; }
+    }
+
+
+    public class FlightFromToDTO
+    {
+        public int Id { get;set;}
+        public string From { get;set;}
+        public string To { get;set;}
+    }
 }

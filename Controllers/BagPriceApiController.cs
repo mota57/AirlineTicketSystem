@@ -34,7 +34,7 @@ namespace AireLineTicketSystem.Controllers
                 .FirstOrDefaultAsync(p => p.AirlineId == airlineId);
 
             //await _context.Entry(result).Collection(p => p.BagPriceDetails).LoadAsync();
-
+            
             return _mapper.Map<BagPriceMasterDTO>(result);
         }
 

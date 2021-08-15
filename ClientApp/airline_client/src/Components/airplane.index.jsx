@@ -4,15 +4,13 @@ import apiUrls from "../utils/endpoints";
 
 import { Link, useParams } from "react-router-dom";
 import { ModalDelete } from "./app.modals";
+import ConfirmModal from "../utils/ConfirmModal";
 
 export default function AirplaneComponent(props) {
   const { airlineid } = useParams();
-  //airlineid = airlineid ? airlineid :0;
   const [state, setState] = useState({
     airplaneName: "",
     records: [],
-    showModalDelete: false,
-    airplaneId: null,
   });
 
   console.log("airlineid::", airlineid);
@@ -32,28 +30,24 @@ export default function AirplaneComponent(props) {
         setState({
           ...state,
           records: dataRecords,
-          airplaneId: null,
-          showModalDelete: false,
         });
       });
   }
 
-  function handleDelete() {
-    if (isNaN(state.airplaneId) || Number(state.airplaneId) <= 0) {
+  function handleDelete(airplaneId) {
+    if (isNaN(airplaneId) || Number(airplaneId) <= 0) {
       throw new Error("bad request airplane id");
     }
 
     axios
-      .delete(`${apiUrls.airplane.url}?airplaneId=${state.airplaneId}`)
-      .catch(() => closeModal())
+      .delete(`${apiUrls.airplane.url}?airplaneId=${airplaneId}`)
+      .catch(() => alert('an error ocurred'))
       .then(() => {
         loadAirplanes();
       });
   }
 
-  function closeModal() {
-    changeProperty({ showModalDelete: false, airplaneId: null });
-  }
+
 
   function changeProperty(objectUpdate) {
    
@@ -71,11 +65,11 @@ export default function AirplaneComponent(props) {
   console.log('state::', state);
   return (
     <>
-      <ModalDelete
+      {/* <ModalDelete
         showModal={state.showModalDelete}
         handleOnClose={() => closeModal()}
         handleOk={() => handleDelete(state.airplaneId)}
-      />
+      /> */}
 
       <div className="container m-top-1">
         <h1>Aviones de la aerolinea {airlineid}</h1>
@@ -112,17 +106,8 @@ export default function AirplaneComponent(props) {
                     >
                       Editar
                     </Link>
-                    <button
-                      onClick={() =>
-                        changeProperty({
-                          airplaneId: airplane.id,
-                          showModalDelete: true,
-                        })
-                      }
-                      className="btn btn-danger"
-                    >
-                      Eliminiar
-                    </button>
+                    <button className="btn btn-danger" onClick={() => ConfirmModal(() => handleDelete(airplane.id) ) }>Delete</button>
+                    
                   </div>
                 </td>
               </tr>

@@ -6,7 +6,9 @@ import AirportAirlineForm from "./Components/airport.airlines/airport.airlines.f
 import AirportAirlineIndex from "./Components/airport.airlines/airport.airlines.index";
 import {AirportEditComponent} from "./Components/airport.form";
 
+
 const RouteAirportConfig = [
+
   {path: '/gate/form/:gateid', componente: GateFormComponent },
   {path: '/gate', componente: GateIndexComponent },
   {path: '/terminal/form/:terminalid', componente: TerminalFormComponent },

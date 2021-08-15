@@ -27,13 +27,5 @@
     <EmbeddedResource Remove="ClientApp\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Logs.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Logs.txt" />
-  </ItemGroup>
-
 
 </Project>

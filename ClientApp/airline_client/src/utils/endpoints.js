@@ -21,6 +21,7 @@ const endpoints = {
         url:`${apiUrl}/AirportAirlineApi`,
         airlinesByAirportid:`${apiUrl}/AirportAirlineApi/GetAirlinesByAirportId`,
         getAirlinesToSelect:`${apiUrl}/AirportAirlineApi/GetAirlinesToSelect`,
+        getAirportByAirlineId:(airlineid) =>  airlineid ? `${apiUrl}/AirportAirlineApi/GetAirportByAirlineId/${airlineid}` : null,
         delete:`${apiUrl}/AirportAirlineApi/DeleteAirlineAirport`,
     },
     gate: () => {
@@ -28,6 +29,12 @@ const endpoints = {
         return {
             url,
             getbyid:`${url}/getbyid`,
+            getGatesByAirportAirline: (airportid, airlineid) => {
+                if(airportid > 0 && airlineid > 0 ) {
+                    return `${url}/getGatesByAirportAirline?airportid=${airportid}&airlineid=${airlineid}`;
+                } 
+                return null;
+            }
         }
     },
     terminal: () => {
@@ -35,13 +42,43 @@ const endpoints = {
         return {
             url,
             getbyid:`${url}/getbyid`,
-            getAirlines:`${url}/GetAirlinesForTerminalsToSelect`
-        }
+            getAirlines:`${url}/GetAirlinesForTerminalsToSelect`,
+            getTerminalByAirlineId:(airlineid) =>`${url}/getTerminalByAirlineId/${airlineid}`
+         }
     },
     bagPrice: () => {
         let url = `${apiUrl}/bagpriceapi`;
         return {
-            getByAirlineId: (airlineid) => `${url}/getByAirlineId/${airlineid}`,
+            url,
+            getByAirlineId: (airlineid) => `${url}?airlineid=${airlineid}`,
+            delete: (id) => `${url}/${id}`,
+            update: (id) => `${url}/${id}`
+        }
+    },
+    bagPriceDetail: () => {
+        let url = `${apiUrl}/BagPriceDetailApi`;
+        return {
+            url,
+            update: (id) => `${url}/${id}`,
+            delete: (id) => `${url}/${id}`
+        }
+    },
+    flight: () => {
+        let url = `${apiUrl}/flightapi`;
+        return {
+            url,
+            byId: (id) => `${url}/${id}`,
+            update: (id) => `${url}/${id}`,
+            delete: (id) => `${url}/${id}`
+        }
+    },
+    flightScale: () => {
+        let url = `${apiUrl}/flightScaleapi`;
+        return {
+            url,
+            byId: (id) => `${url}/${id}`,
+            update: (id) => `${url}/${id}`,
+            delete: (id) => `${url}/${id}`
         }
     }
 }

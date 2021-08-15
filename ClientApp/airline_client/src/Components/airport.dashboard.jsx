@@ -79,7 +79,7 @@ function DashboardMenu ({airportid}) {
       url: `${pathUrl}/terminal`,
       stateUrl: { airportid },
       labelUrl: "Acceder",
-    },
+    }  
   ];
 
 

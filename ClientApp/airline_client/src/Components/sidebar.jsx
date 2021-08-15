@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { uuidv4 } from "../utils/methods";
+import { Offcanvas } from "react-bootstrap";
 
 export default function SideBarComponent(props) {
+
+  const [show, setShow] = useState(false);
+
   const sideBarObj  = [
     {
       label: "Airports",
@@ -13,6 +17,17 @@ export default function SideBarComponent(props) {
       label: "Airline",
       isActive: false,
       url:'/airline'
+    },
+    {
+      label: "TODO",
+      isActive: false,
+      url:'/todo'
+    },
+
+    {
+      label: "Tickets",
+      isActive: false,
+      url:'/ticketAdmin'
     },
   ]
   let indexStorage = localStorage.getItem('sidebarid', 1);
@@ -35,20 +50,21 @@ export default function SideBarComponent(props) {
   }
 
   return (
+    <>
+    <i  role="button" tabIndex="0" className="fa fa-bars fa-3x m-1" onClick={() => setShow(true)}></i>
+
+<Offcanvas show={show} onHide={() => setShow(false)} className="bg-dark">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title style={{color:"white"}}>Airport menu</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
     <div
       className="col-md-3 d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
       style={{ width: "280px", height: "1000px" }}
     >
-      <a
-        href="/"
-        className="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
-      >
-        <svg className="bi me-2" width="40" height="32">
-          <use xlinkHref="#bootstrap"></use>
-        </svg>
-        <span className="fs-4">Sidebar</span>
-      </a>
-      <hr />
+       
+  
+    
       <ul className="nav nav-pills flex-column mb-auto">
         {menuSidebar.map((m, i) => (
           <li className="nav-item" onClick={() => handleSetActive(i)} key={uuidv4()}>
@@ -67,6 +83,9 @@ export default function SideBarComponent(props) {
       </ul>
       <hr />
     </div>
+    </Offcanvas.Body>
+      </Offcanvas>
+    </>
   );
 }
 

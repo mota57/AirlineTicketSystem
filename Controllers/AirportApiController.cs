@@ -145,49 +145,49 @@ namespace AireLineTicketSystem.Controllers
 
 
         // DELETE api/<AirportContorller>/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int airportid)
-        {
-            var record = await _context.Airports
-                            .Include(p => p.Terminals)
-                            .Include(p => p.AirlineAirport)
-                            .Include(p => p.Gates)
-                            .FirstOrDefaultAsync(x => x.Id == airportid);
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult> Delete(int airportid)
+        //{
+        //    var record = await _context.Airports
+        //                    .Include(p => p.Terminals)
+        //                    .Include(p => p.AirlineAirport)
+        //                    .Include(p => p.Gates)
+        //                    .FirstOrDefaultAsync(x => x.Id == airportid);
 
-            if (record != null)
-            {
-                return NotFound();
-            }
+        //    if (record != null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            using var transaction = _context.Database.BeginTransaction();
+        //    using var transaction = _context.Database.BeginTransaction();
 
-            try
-            {
+        //    try
+        //    {
 
-                _context.SetIsDelete(record);
-                _context.SetIsDelete(record.AirlineAirport.Cast<Entity>().ToList());
+        //        _context.SetIsDelete(record);
+        //        _context.SetIsDelete(record.AirlineAirport.Cast<Entity>().ToList());
 
-                //unlink terminals and gates
-                foreach (var entity in record.Terminals)
-                {
-                    entity.AirlineId = null;
-                    _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
-                }
+        //        //unlink terminals and gates
+        //        foreach (var entity in record.Terminals)
+        //        {
+        //            entity.AirlineId = null;
+        //            _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
+        //        }
 
-                foreach (var entity in record.Gates)
-                {
-                    entity.AirlineId = null;
-                    _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
-                }
+        //        foreach (var entity in record.Gates)
+        //        {
+        //            entity.AirlineId = null;
+        //            _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
+        //        }
 
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.ToString());
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
-            return NoContent();
-        }
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        logger.LogError(e.ToString());
+        //        return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        //    }
+        //    return NoContent();
+        //}
     }
 }

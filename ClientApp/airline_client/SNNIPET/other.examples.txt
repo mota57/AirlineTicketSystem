@@ -35,3 +35,31 @@
               handleOnChange={changeHandler}
               logConsole={true}
             />
+
+
+ function handleDelete(recordIdToDelete) {
+    axios
+      .delete(`${ctrlApiUrl}/${recordIdToDelete}`)
+      .catch(() => {
+        closeModal();
+        alert("un error a ocurrido lo sentimos.");
+      })
+      .then(() => {
+        load();
+        closeModal();
+      });
+  }
+
+  function closeModal() {
+    changeProperty({ showModalDelete: false, recordId: null });
+  }
+
+  function changeProperty(objectUpdate) {
+    setSate({ ...state, ...objectUpdate });
+  }
+
+                  {/* <ModalDelete
+        showModal={state.showModalDelete}
+        handleOnClose={() => closeModal()}
+        handleOk={() => handleDelete(state.recordId)}
+      /> */}

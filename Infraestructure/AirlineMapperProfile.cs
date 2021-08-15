@@ -32,7 +32,17 @@ namespace AireLineTicketSystem.Infraestructure
             CreateMap<Airplane, AirplaneDTO>()
                 .ForMember(p => p.AirlineName, (p) => p.MapFrom(x => x.Airline.Name))
                 .ReverseMap();
-            CreateMap<Gate, GateDTO>().ReverseMap();
+
+
+            CreateMap<Gate, GateDTO>()
+                .ForMember(p => p.AirlinesId, x => x.MapFrom(MapFromAirlineGatesToAirlineIds));
+
+            CreateMap<GateDTO, Gate>()
+                .ForMember(p => p.AirlineGates, x => x.MapFrom(MapFromAirlinesId));
+                
+
+            CreateMap<Gate, GateIndexDTO>()
+                .ForMember(p => p.AirlineName, x => x.MapFrom(BuildAirlineNameColumn));
 
             CreateMap<AirlineAirport, AirlineAirportDTO>()
                  .ForMember(p => p.AirlineId, (p) => p.MapFrom(x => x.AirlineId))
@@ -45,6 +55,37 @@ namespace AireLineTicketSystem.Infraestructure
                 .ReverseMap();
 
             CreateMap<BagPriceDetail, BagPriceDetailDTO>().ReverseMap();
+            CreateMap<Flight, FlightDTO>().ReverseMap();
+            CreateMap<Flight, FlightCreateDTO>().ReverseMap();
+            CreateMap<FlightScale, FlightScaleDTO>().ReverseMap();
+
+        }
+
+
+        private string BuildAirlineNameColumn(Gate gate, GateIndexDTO dto)
+        {
+            var LIMIT_AIRLINE_GATES = 3;
+            var truncateContent = gate.AirlineGates.Count() > LIMIT_AIRLINE_GATES ? "..." : "";
+            return string.Join(",",
+                           gate.AirlineGates.Select(p => p.Airline)
+                          .Select(p => p.Name)
+                          .Take(LIMIT_AIRLINE_GATES)) + truncateContent;
+        }
+
+        public List<int> MapFromAirlineGatesToAirlineIds(Gate gate, GateDTO dto)
+        {
+            var output = new List<int>();
+            if (gate.AirlineGates == null || gate.AirlineGates.Count == 0) return output;
+            output.AddRange(gate.AirlineGates.Select(p => p.AirlineId));
+            return output;
+        }
+
+        public List<AirlineGate> MapFromAirlinesId(GateDTO dto, Gate gate)
+        {
+            var output = new List<AirlineGate>();
+            if(dto.AirlinesId == null || dto.AirlinesId.Count == 0 ) return output;
+            output.AddRange(dto.AirlinesId.Select(id => new AirlineGate { AirportId = dto.AirportId, AirlineId = id, GateId = dto.Id  }));
+            return output;
         }
     }
 

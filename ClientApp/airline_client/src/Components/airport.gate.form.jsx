@@ -4,6 +4,7 @@ import { Redirect, useParams } from "react-router-dom";
 import FormError from "./form.error";
 import apiUrls from "../utils/endpoints";
 import axios from "axios";
+import Picklist from "./picklist";
 
 export default function GateFormComponent(props) {
   const { recordid, gateid } = useParams();
@@ -18,11 +19,13 @@ export default function GateFormComponent(props) {
   const [state, setState] = useState({
     name: "",
     isActive: false,
+    airlinesId: [],
     formErrorObj: null,
   });
 
   useState(() => {
     //load airport content
+    console.log("use state callled");
     if (!isCreate) {
       axios
         .get(`${apiUrls.gate().getbyid}/${gateid}`)
@@ -32,6 +35,7 @@ export default function GateFormComponent(props) {
             ...state,
             name: data.data.name,
             isActive: data.data.isActive,
+            airlinesId: data.data.airlinesId,
           })
         );
     }
@@ -69,6 +73,7 @@ export default function GateFormComponent(props) {
         .put(`${formApiUrl}/${gateid}`, {
           name: state.name,
           isActive: state.isActive,
+          airlineId: state.airlineId,
         })
         .then(() => redirectToIndex())
         .catch((data) => {
@@ -88,53 +93,77 @@ export default function GateFormComponent(props) {
   }
 
   return (
-    <>
-      {/* <pre>{JSON.stringify(state, null, 2)}</pre> */}
-      <div className="container">
-        <FormError formerrorobj={state.formErrorObj} />
+    <div className="container">
+      <div className="row">
 
-        <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
-          <div className="form-group">
-            <label className="form-label">Name </label>
-            <input
-              type="text"
-              className="form-control"
-              name="name"
-              value={state.name}
-              onChange={changeHandler}
-            />
-          </div>
+     
+      <div className="card col-md-6">
+        <div className="card-header"><h2>Puerta</h2></div>
+        <div className="card-body">
+          <div className="container">
+            <FormError formerrorobj={state.formErrorObj} />
 
-          <div className="form-check m-top-1">
-            <input
-              checked={state.isActive}
-              type="checkbox"
-              className="form-check-input"
-              value={state.isActive || false}
-              name="isActive"
-              onChange={(e) => changeHandler(e, state.isActive)}
-              id="active"
-            />
-            <label className="form-check-label" htmlFor="#active">
-              Activo
-            </label>
-          </div>
+            <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
+              <div className="form-group">
+                <label className="form-label">Name </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="name"
+                  value={state.name}
+                  onChange={changeHandler}
+                />
+              </div>
 
-          <div className="form-group m-top-1">
-            <input
-              type="submit"
-              value="Guardar"
-              className="btn btn-primary m-r-1-sm"
-            />
-            <input
-              type="button"
-              value="Cancelar"
-              className="btn btn-danger"
-              onClick={() => redirectToIndex()}
-            />
+              <div className="form-check m-top-1">
+                <input
+                  checked={state.isActive}
+                  type="checkbox"
+                  className="form-check-input"
+                  value={state.isActive || false}
+                  name="isActive"
+                  onChange={(e) => changeHandler(e, state.isActive)}
+                  id="active"
+                />
+                <label className="form-check-label" htmlFor="#active">
+                  Activo
+                </label>
+              </div>
+              <Picklist
+                recordid={state.airlinesId}
+                formName={`airlinesId`}
+                label="Aerolinea"
+                url={`${apiUrls.airline_airport.airlinesByAirportid}/${airportId}`}
+                handleOnChange={changeHandler}
+                logConsole={false}
+                fieldName="airlineName"
+                fieldValue="airlineId"
+                multiple={true}
+              />
+
+              <div className="form-group m-top-1">
+                <input
+                  type="submit"
+                  value="Guardar"
+                  className="btn btn-primary m-r-1-sm"
+                />
+                <input
+                  type="button"
+                  value="Cancelar"
+                  className="btn btn-danger"
+                  onClick={() => redirectToIndex()}
+                />
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
-    </>
+      <div className="col-md-6">
+
+        <pre>{JSON.stringify(state, null, 2)}</pre>
+      </div>
+
+    </div>
+    </div>
   );
 }

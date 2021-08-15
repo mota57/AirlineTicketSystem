@@ -51,6 +51,19 @@ namespace AireLineTicketSystem.Controllers
             return _mapper.Map<TerminalDTO>(record);
         }
 
+
+        // GET api/Terminal/GetById/5
+        [HttpGet("getTerminalByAirlineId/{airlineid}")]
+        public async Task<List<PickList>> getTerminalByAirlineId(int airlineid)
+        {
+            var records = await _context.Terminals
+                   .AsNoTracking()
+                   .Where(a => a.AirlineId == airlineid)
+                   .Select(p => new PickList {  Id = p.Id, Name = p.Name})
+                   .ToListAsync();
+            return records;
+        }
+
         // POST api/Terminal
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] TerminalDTO dto)
@@ -97,6 +110,17 @@ namespace AireLineTicketSystem.Controllers
             {
                 return BadRequest(ModelState);
             }
+            return NoContent();
+        }
+
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var record = await _context.Terminals.FirstOrDefaultAsync(p => p.Id == id);
+            if(record == null) return NotFound();
+            _context.SetIsDelete(record);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
     }

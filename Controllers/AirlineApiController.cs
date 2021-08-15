@@ -101,63 +101,60 @@ namespace AireLineTicketSystem.Controllers
 
 
         // DELETE api/<AirportContorller>/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var record = await _context.Airlines
-                            .Include(p => p.Terminals)
-                            .Include(p => p.Airplanes)
-                            .Include(p => p.AirlineAirport)
-                            .Include(p => p.Gates)
-                            .Include(p => p.BagPriceMaster)
-                            .ThenInclude(p => p.BagPriceDetails)
-                            .FirstOrDefaultAsync(x => x.Id == id);
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult> Delete(int id)
+        //{
+        //    var record = await _context.Airlines
+        //                    .Include(p => p.Terminals)
+        //                    .Include(p => p.Airplanes)
+        //                    .Include(p => p.AirlineAirport)
+        //                    .Include(p => p.AirlineGates)
+        //                    .Include(p => p.BagPriceMaster)
+        //                    .ThenInclude(p => p.BagPriceDetails)
+        //                    .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (record == null)
-            {
-                return NotFound();
-            }
+        //    if (record == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            using var transaction = _context.Database.BeginTransaction();
+        //    using var transaction = _context.Database.BeginTransaction();
             
-            try
-            {
-                _context.SetIsDelete(record);
-                _context.SetIsDelete(record.AirlineAirport.Cast<Entity>().ToList());
+        //    try
+        //    {
+        //        _context.SetIsDelete(record);
+        //        _context.SetIsDelete(record.AirlineAirport.Cast<Entity>().ToList());
                 
-                await _context.SaveChangesAsync();
+        //        await _context.SaveChangesAsync();
 
-                //unlink terminals and gates, you dont want to delete the terminals and gates.
-                foreach (var entity in record.Terminals)
-                {
-                    entity.AirlineId = null;
-                    _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
-                }
+        //        //unlink terminals and gates, you dont want to delete the terminals and gates.
+        //        foreach (var entity in record.Terminals)
+        //        {
+        //            entity.AirlineId = null;
+        //            _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
+        //        }
 
-                foreach (var entity in record.Gates)
-                {
-                    entity.AirlineId = null;
-                    _context.Entry(entity).Property(p => p.AirlineId).IsModified = true;
-                }
 
-                await _context.SaveChangesAsync();
+        //        _context.SetIsDelete(record.AirlineGates?.Cast<Entity>().ToList());
+
+        //        await _context.SaveChangesAsync();
 
                
-                _context.SetIsDelete(record.Airplanes.Cast<Entity>().ToList());
-                _context.SetIsDelete(record.BagPriceMaster);
-                _context.SetIsDelete(record.BagPriceMaster.BagPriceDetails.Cast<Entity>().ToList());
+        //        _context.SetIsDelete(record.Airplanes?.Cast<Entity>().ToList());
+        //        _context.SetIsDelete(record.BagPriceMaster);
+        //        _context.SetIsDelete(record.BagPriceMaster?.BagPriceDetails?.Cast<Entity>().ToList());
 
-                await _context.SaveChangesAsync();
+        //        await _context.SaveChangesAsync();
 
-                await transaction.CommitAsync();
-            }
-            catch (Exception e)
-            {
-                logger.LogError($"Controller: {nameof(AirlineApiController)}\nMETHOD: Delete", e.ToString());
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
-            return NoContent();
-        }
+        //        await transaction.CommitAsync();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        logger.LogError($"Controller: {nameof(AirlineApiController)}\nMETHOD: Delete", e.ToString());
+        //        return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        //    }
+        //    return NoContent();
+        //}
 
     }
 }

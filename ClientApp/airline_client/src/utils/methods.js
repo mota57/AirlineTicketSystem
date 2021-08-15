@@ -5,7 +5,11 @@ export function changeHandlerBuilder(setRecord, record) {
     var val = e.target.value;
     console.log('changeHandlerBuilder',e);
     if (e.target.nodeName === "SELECT") {
-      val = Number(val);
+      if(e.target.multiple) {
+        val = val != "" ?  Array.from(e.target.selectedOptions).map(p => Number(p.value)) : []
+      } else {
+        val = Number(val);
+      }
     }
     setRecord({
       ...record,

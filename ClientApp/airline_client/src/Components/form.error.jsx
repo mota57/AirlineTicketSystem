@@ -1,7 +1,6 @@
 import {uuidv4} from '../utils/methods';
 
 
-
 export default function FormError(props) {
   console.log(props.formerrorobj);
   if(props.formerrorobj === null) {
@@ -34,7 +33,7 @@ function BuildErros(errors) {
         return (
           <>
           <label >{errorKey}</label>
-          <ul>
+          <ul style={{listStyle:'none'}}>
             {errors[errorKey].map((errorText) => {
               let uid = uuidv4();
               return (

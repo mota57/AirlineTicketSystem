@@ -19,7 +19,7 @@ namespace AireLineTicketSystem.Entities
         public DateTime DepartTime { get; set; }
         public DateTime ArrivalTime { get; set; }
 
-        public int AirplaneId { get; set; }
+        public int? AirplaneId { get; set; }
         public Airplane Airplane { get; set; }
 
         public int AirlineId { get; set; }
@@ -27,14 +27,16 @@ namespace AireLineTicketSystem.Entities
 
         public decimal MinPrice { get; set; }
 
-        public int TerminalId { get; set; }
+        public int? TerminalId { get; set; }
         public Terminal Terminal { get; set; }
 
-        public int GateId { get; set; }
+        public int? GateId { get; set; }
         public Gate Gate { get; set; }
-        
-        public decimal? TotalPaid { get;set;}
 
+        public int FlightId { get;set;}
+        public Flight Flight { get;set;}
+        public int Order { get;set;}
+        public decimal? TotalPaid { get;set;}
         public ICollection<FlightPrice> FlightPrices { get; set; } = new HashSet<FlightPrice>();
         public ICollection<FlightBagPayment> FlightBagPayments = new HashSet<FlightBagPayment>();
 
@@ -44,5 +46,4 @@ namespace AireLineTicketSystem.Entities
         //}
     }
 
-    
 }

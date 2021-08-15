@@ -28,8 +28,10 @@ namespace AireLineTicketSystem.Entities
         public DbSet<Airplane> Airplanes { get; set; }
         public DbSet<Airport> Airports { get; set; }
         public DbSet<Gate> Gates { get; set; }
+        public DbSet<AirlineGate> AirlineGates { get;set;}
         public DbSet<Passenger> Passengers { get; set; }
         public DbSet<Flight> Flights { get; set; }
+        public DbSet<FlightScale> FlightScales  { get; set; }
         public DbSet<FlightPrice> FlightPrices { get; set; }
         public DbSet<AirlineAirport> AirlineAirport { get; set; }
         public DbSet<FlightBagPayment> FlightBagPayment { get; set; }

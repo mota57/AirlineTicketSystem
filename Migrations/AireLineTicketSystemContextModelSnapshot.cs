@@ -70,6 +70,39 @@ namespace AireLineTicketSystem.Migrations
                     b.ToTable("AirlineAirport");
                 });
 
+            modelBuilder.Entity("AireLineTicketSystem.Entities.AirlineGate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AirlineId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AirportId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GateId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AirlineId");
+
+                    b.HasIndex("AirportId");
+
+                    b.HasIndex("GateId");
+
+                    b.ToTable("AirlineGates");
+                });
+
             modelBuilder.Entity("AireLineTicketSystem.Entities.Airplane", b =>
                 {
                     b.Property<int>("Id")
@@ -1796,7 +1829,7 @@ namespace AireLineTicketSystem.Migrations
                     b.Property<int>("AirlineId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AirplaneId")
+                    b.Property<int?>("AirplaneId")
                         .HasColumnType("int");
 
                     b.Property<int>("AirportArrivalId")
@@ -1814,7 +1847,10 @@ namespace AireLineTicketSystem.Migrations
                     b.Property<DateTime>("DepartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GateId")
+                    b.Property<int>("FlightId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GateId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -1823,7 +1859,10 @@ namespace AireLineTicketSystem.Migrations
                     b.Property<decimal>("MinPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("TerminalId")
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TerminalId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("TotalPaid")
@@ -1839,11 +1878,13 @@ namespace AireLineTicketSystem.Migrations
 
                     b.HasIndex("AirportDepartureId");
 
+                    b.HasIndex("FlightId");
+
                     b.HasIndex("GateId");
 
                     b.HasIndex("TerminalId");
 
-                    b.ToTable("FlightScale");
+                    b.ToTable("FlightScales");
                 });
 
             modelBuilder.Entity("AireLineTicketSystem.Entities.Gate", b =>
@@ -1852,9 +1893,6 @@ namespace AireLineTicketSystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("AirlineId")
-                        .HasColumnType("int");
 
                     b.Property<int>("AirportId")
                         .HasColumnType("int");
@@ -1871,8 +1909,6 @@ namespace AireLineTicketSystem.Migrations
                         .HasColumnType("nvarchar(3)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AirlineId");
 
                     b.HasIndex("AirportId");
 
@@ -1959,6 +1995,33 @@ namespace AireLineTicketSystem.Migrations
                     b.Navigation("Airline");
 
                     b.Navigation("Airport");
+                });
+
+            modelBuilder.Entity("AireLineTicketSystem.Entities.AirlineGate", b =>
+                {
+                    b.HasOne("AireLineTicketSystem.Entities.Airline", "Airline")
+                        .WithMany("AirlineGates")
+                        .HasForeignKey("AirlineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AireLineTicketSystem.Entities.Airport", "Airport")
+                        .WithMany()
+                        .HasForeignKey("AirportId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AireLineTicketSystem.Entities.Gate", "Gate")
+                        .WithMany("AirlineGates")
+                        .HasForeignKey("GateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Airline");
+
+                    b.Navigation("Airport");
+
+                    b.Navigation("Gate");
                 });
 
             modelBuilder.Entity("AireLineTicketSystem.Entities.Airplane", b =>
@@ -2076,8 +2139,7 @@ namespace AireLineTicketSystem.Migrations
                     b.HasOne("AireLineTicketSystem.Entities.Airplane", "Airplane")
                         .WithMany()
                         .HasForeignKey("AirplaneId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("AireLineTicketSystem.Entities.Airport", "AirportArrival")
                         .WithMany()
@@ -2091,17 +2153,21 @@ namespace AireLineTicketSystem.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("AireLineTicketSystem.Entities.Flight", "Flight")
+                        .WithMany("FlightScales")
+                        .HasForeignKey("FlightId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("AireLineTicketSystem.Entities.Gate", "Gate")
                         .WithMany()
                         .HasForeignKey("GateId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("AireLineTicketSystem.Entities.Terminal", "Terminal")
                         .WithMany()
                         .HasForeignKey("TerminalId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Airline");
 
@@ -2111,6 +2177,8 @@ namespace AireLineTicketSystem.Migrations
 
                     b.Navigation("AirportDeparture");
 
+                    b.Navigation("Flight");
+
                     b.Navigation("Gate");
 
                     b.Navigation("Terminal");
@@ -2118,18 +2186,11 @@ namespace AireLineTicketSystem.Migrations
 
             modelBuilder.Entity("AireLineTicketSystem.Entities.Gate", b =>
                 {
-                    b.HasOne("AireLineTicketSystem.Entities.Airline", "Airline")
-                        .WithMany("Gates")
-                        .HasForeignKey("AirlineId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("AireLineTicketSystem.Entities.Airport", "Airport")
                         .WithMany("Gates")
                         .HasForeignKey("AirportId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Airline");
 
                     b.Navigation("Airport");
                 });
@@ -2167,13 +2228,13 @@ namespace AireLineTicketSystem.Migrations
                 {
                     b.Navigation("AirlineAirport");
 
+                    b.Navigation("AirlineGates");
+
                     b.Navigation("Airplanes");
 
                     b.Navigation("BagPriceMaster");
 
                     b.Navigation("Flights");
-
-                    b.Navigation("Gates");
 
                     b.Navigation("Terminals");
                 });
@@ -2197,6 +2258,11 @@ namespace AireLineTicketSystem.Migrations
                     b.Navigation("BagPriceDetails");
                 });
 
+            modelBuilder.Entity("AireLineTicketSystem.Entities.Flight", b =>
+                {
+                    b.Navigation("FlightScales");
+                });
+
             modelBuilder.Entity("AireLineTicketSystem.Entities.FlightScale", b =>
                 {
                     b.Navigation("FlightPrices");
@@ -2204,6 +2270,8 @@ namespace AireLineTicketSystem.Migrations
 
             modelBuilder.Entity("AireLineTicketSystem.Entities.Gate", b =>
                 {
+                    b.Navigation("AirlineGates");
+
                     b.Navigation("Flights");
                 });
 

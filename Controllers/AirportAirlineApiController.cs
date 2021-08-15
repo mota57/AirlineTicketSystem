@@ -86,6 +86,21 @@ namespace AireLineTicketSystem.Controllers
         }
 
 
+        [HttpGet("GetAirportByAirlineId/{airlineId}")]
+        public async Task<IEnumerable<PickList>> GetAirportByAirlineId(int airlineId)
+        {
+            var records = await _context.AirlineAirport
+                .Where(p => p.Airline.Id == airlineId)
+                .Select(p => new PickList
+                {
+                    Id = p.AirportId.Value,
+                    Name = p.Airport.Name
+                }).ToListAsync();
+
+            return records;
+        }
+
+
         [HttpPost()]
         public async Task<ActionResult<IEnumerable<AirlineDTO>>> Post(AirlineAirportDTO dto)
         {

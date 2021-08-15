@@ -6,7 +6,7 @@ CREATE DB CONTEXT
 TODO GATE NAME MUST BE UNIQUE
 TODO TERMINAL NAME MUST BE UNIQUE
 
-
+EF CORE https://www.learnentityframeworkcore.com/raw-sql
 https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities
  public static InsertOrUpdateGraph(AirportDTO airport)
         {

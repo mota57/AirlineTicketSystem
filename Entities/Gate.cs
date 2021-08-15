@@ -11,10 +11,21 @@ namespace AireLineTicketSystem.Entities
         public int AirportId { get;set;}
         public Airport Airport { get;set;}
         public bool IsActive { get;set;}
-        public int? AirlineId { get; set; }
-        public Airline Airline { get; set; }
+        public ICollection<AirlineGate> AirlineGates { get; set; } = new HashSet<AirlineGate>();
         public ICollection<Flight> Flights { get; set; } = new HashSet<Flight>();
     }
-
+   
+    public class AirlineGate : Entity
+    {
+        public int Id { get;set;}
+        public int AirlineId { get;set;}
+        public Airline Airline { get;set;}
+        public int GateId { get;set;}
+        public Gate Gate { get;set;}
+        public int AirportId { get;set;}
+        public Airport Airport { get;set;}
+        public bool IsActive { get;set;}
+        
+    }
 
 }
