@@ -17,7 +17,6 @@ export default function AirlineFormComponent(props) {
   const [formErrorObj, setFormErrorObj] = useState(null);
   const changeHandler = changeHandlerBuilder(setRecord, record);
 
-  
   console.log("recordid airline", recordid);
 
   useEffect(() => {
@@ -62,47 +61,63 @@ export default function AirlineFormComponent(props) {
 
   return (
     <>
-      <pre>{JSON.stringify(record, null, 2)}</pre>
-      <div className="container">
-        <h3>Aerolinea</h3>
-        <FormError formerrorobj={formErrorObj} />
-        <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
-          <div className="form-group">
-            <label className="form-label">Name </label>
-            <input
-              type="text"
-              className="form-control"
-              name="name"
-              value={record.name}
-              onChange={changeHandler}
-            />
-          </div>
-          <div className="form-check m-top-1">
-            <input
-              checked={record.isActive}
-              type="checkbox"
-              className="form-check-input"
-              value={record.isActive || false}
-              name="isActive"
-              onChange={(e) => changeHandler(e, record.isActive)}
-              id="active"
-            />
-            <label className="form-check-label" htmlFor="#active">
-              Activo
-            </label>
-          </div>
+      <div className="row justify-content-md-center" style={{marginTop:'20px'}}>
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-body">
+              {/* body */}
 
-          <div className="form-group m-top-1">
-            <input type="submit" value="Guardar" className="btn btn-primary" />
-            <input
-              type="button"
-              value="Cancelar"
-              className="btn btn-danger"
-              onClick={() => setRedirect(true)}
-            />
+              <h3>Aerolinea</h3>
+              <FormError formerrorobj={formErrorObj} />
+              <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
+                <div className="form-group">
+                  <label className="form-label">Name </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="name"
+                    value={record.name}
+                    onChange={changeHandler}
+                  />
+                </div>
+                <div className="form-check m-top-1">
+                  <input
+                    checked={record.isActive}
+                    type="checkbox"
+                    className="form-check-input"
+                    value={record.isActive || false}
+                    name="isActive"
+                    onChange={(e) => changeHandler(e, record.isActive)}
+                    id="active"
+                  />
+                  <label className="form-check-label" htmlFor="#active">
+                    Activo
+                  </label>
+                </div>
+
+                <div className="form-group m-top-1">
+                  <input
+                    type="submit"
+                    value="Guardar"
+                    className="btn btn-primary"
+                  />
+                  <input
+                    type="button"
+                    value="Cancelar"
+                    className="btn btn-danger"
+                    onClick={() => setRedirect(true)}
+                  />
+                </div>
+              </form>
+
+              {/* end body */}
+            </div>
           </div>
-        </form>
+        </div>
       </div>
+      {/* <div>
+        <pre>{JSON.stringify(record, null, 2)}</pre>
+      </div> */}
     </>
   );
 }

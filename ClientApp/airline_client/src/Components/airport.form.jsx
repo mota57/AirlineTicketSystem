@@ -89,13 +89,15 @@ export function AirportFormComponent(props) {
     <>
       <pre>{/* {JSON.stringify(record, null, 2) } */}</pre>
       <div className="container">
-        <div className="card">
+        <div className="row  justify-content-md-center">
+          <div className="col-md-6">
+          <div className="card">
           <div className="card-body">
             <h3>Aeropuerto</h3>
 
             <FormError formerrorobj={formErrorObj} />
 
-            <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
+            <form onSubmit={onSubmit} >
               <div className="form-group">
                 <label className="form-label">Name </label>
                 <input
@@ -152,7 +154,10 @@ export function AirportFormComponent(props) {
               </div>
             </form>
           </div>
+        </div> 
+          </div>
         </div>
+       
       </div>
     </>
   );

@@ -79,7 +79,7 @@ namespace AireLineTicketSystem.Controllers
             {
                 await _context.Airplanes.AddAsync(record);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(Post), new { id = record.Id }, record);
+                return CreatedAtAction(nameof(Post), null, new { record.Id });
             }
             return BadRequest(ModelState);
         }

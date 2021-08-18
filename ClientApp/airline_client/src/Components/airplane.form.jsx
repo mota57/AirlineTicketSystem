@@ -62,7 +62,7 @@ export default function AirplaneFormComponent(props) {
         .put(`${apiUrls.airplane.url}/${recordid}`, record)
         .then(() => setRedirect(`/airplane/${airlineId}`))
         .catch((data) => {
-          setFormErrorObj(data.response.data);
+          setFormErrorObj(data);
         });
     }
   }
@@ -82,81 +82,83 @@ export default function AirplaneFormComponent(props) {
 
   return (
     <>
-      {/* <pre>{JSON.stringify(record, null, 2)}</pre> */}
-      <div className="container">
-        <h3>Avion</h3>
+      {/* <pre>{JSON.stringify(formErrorObj, null, 2)}</pre> */}
+      <div
+        className="row justify-content-md-center"
+        style={{ marginTop: "20px" }}
+      >
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-body">
+              {/* body */}
 
-        <FormError formerrorobj={formErrorObj} />
+              <h3>Avion</h3>
 
-        <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
-          <div className="form-group">
-            <label className="form-label">Marca </label>
-            <input
-              type="text"
-              className="form-control"
-              name="brand"
-              value={record.brand}
-              onChange={changeHandler}
-            />
+              <FormError formerrorobj={formErrorObj} />
+
+              <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
+                <div className="form-group">
+                  <label className="form-label">Marca </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="brand"
+                    value={record.brand}
+                    onChange={changeHandler}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Model </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="model"
+                    value={record.model}
+                    onChange={changeHandler}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Codigo </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="code"
+                    value={record.code}
+                    onChange={changeHandler}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Total de asientos </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="totalSeats"
+                    value={record.totalSeats}
+                    onChange={changeHandler}
+                  />
+                </div>
+
+                <div className="form-group m-top-1">
+                  <input
+                    type="submit"
+                    value="Guardar"
+                    className="btn btn-primary"
+                  />
+                  <input
+                    type="button"
+                    value="Cancelar"
+                    className="btn btn-danger"
+                    onClick={() => setRedirect(`/airplane/${airlineId}`)}
+                  />
+                </div>
+              </form>
+
+              {/* end body */}
+            </div>
           </div>
-          <div className="form-group">
-            <label className="form-label">Model </label>
-            <input
-              type="text"
-              className="form-control"
-              name="model"
-              value={record.model}
-              onChange={changeHandler}
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Codigo </label>
-            <input
-              type="text"
-              className="form-control"
-              name="code"
-              value={record.code}
-              onChange={changeHandler}
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Total de asientos </label>
-            <input
-              type="number"
-              className="form-control"
-              name="totalSeats"
-              value={record.totalSeats}
-              onChange={changeHandler}
-            />
-          </div>
-
-          {/* <div className="form-check m-top-1">
-            <input
-              checked={record.isActive}
-              type="checkbox"
-              className="form-check-input"
-              value={record.isActive || false}
-              name="isActive"
-              onChange={(e) => changeHandler(e, record.isActive)}
-              id="active"
-            />
-            <label className="form-check-label" htmlFor="#active">
-              Activo 
-            </label>
-          </div> */}
-
-          <div className="form-group m-top-1">
-            <input type="submit" value="Guardar" className="btn btn-primary" />
-            <input
-              type="button"
-              value="Cancelar"
-              className="btn btn-danger"
-              onClick={() => setRedirect(`/airplane/${airlineId}`)}
-            />
-          </div>
-        </form>
+        </div>
       </div>
     </>
   );

@@ -1,6 +1,7 @@
 import apiUrls from "../../utils/endpoints";
 import {useParams,useRouteMatch } from "react-router-dom";
 import GenericCrudTable from '../../utils/GenericCrudTable';
+import BadgeIsActive from "../../utils/BadgeIsActive";
 
 export default function AirportAirlineIndex(props) {
   const { recordid } = useParams(); //airportid
@@ -9,7 +10,7 @@ export default function AirportAirlineIndex(props) {
   return (
     <GenericCrudTable
       loadUrl={`${apiUrls.airline_airport.airlinesByAirportid}/${recordid}`}
-      deleteUrl={(airlineid) => `${apiUrls.airline_airport.delete}/${airlineid}`}
+      // deleteUrl={(airlineid) => `${apiUrls.airline_airport.delete}/${airlineid}`}
       createUrl={`${url}/form/0`}
       detailUrl={(airlineid) => `${url}/form/${airlineid}`}
       headerList={["Aerolinea", "Estatus"]}
@@ -18,7 +19,7 @@ export default function AirportAirlineIndex(props) {
         <>
           <td >{record.airlineName}</td>
           <td style={{ fontWeight: "400" }}>
-            {record.isActive ? "Activo" : "Inactivo"}
+           <BadgeIsActive isActive={record.isActive} />
           </td>
         </>
       )}

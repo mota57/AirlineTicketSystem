@@ -48,18 +48,24 @@ namespace AireLineTicketSystem.Controllers
             return airlinesToSelect;
         }
 
-
-        [HttpGet()]
-        public async Task<ActionResult<AirlineAirportDTO>> Get([FromQuery] int airportid, [FromQuery] int airlineid)
+        /// <summary>
+        /// for airport_airlines index
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<AirlineAirportDTO>> Get(int id)
         {
             var record =  await _context.AirlineAirport
                 .AsNoTracking()
-                .Where(p => p.AirportId == airportid && p.AirlineId == airlineid)
+                .Where(p => p.Id == id)
                 .Select(p => new AirlineAirportDTO {
                         Id = p.Id,
+                        IsActive = p.IsActive,
                         AirportId = p.Airport.Id,
+                        AirlineId = p.AirlineId,
                         AirportName = p.Airport.Name,
-                        AirlineName = p.Airline.Name
+                        AirlineName = p.Airline.Name,
                     }
                 ).FirstOrDefaultAsync();
 
@@ -79,7 +85,9 @@ namespace AireLineTicketSystem.Controllers
                 {
                     Id = p.Id,
                     AirlineId = p.AirlineId,
-                    AirlineName = p.Airline.Name
+                    AirlineName = p.Airline.Name,
+                    IsActive = p.IsActive
+                    
                 }).ToListAsync();
 
             return records;
@@ -123,10 +131,10 @@ namespace AireLineTicketSystem.Controllers
                 return BadRequest(ModelState);
             }
 
-            var record =  new AirlineAirport { AirportId = dto.AirportId, AirlineId = dto.AirlineId };
+            var record =  new AirlineAirport { AirportId = dto.AirportId, AirlineId = dto.AirlineId, IsActive = dto.IsActive };
             await _context.AirlineAirport.AddAsync(record);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Post), new { dto.AirlineId, dto.AirportId }, record);
+            return CreatedAtAction(nameof(Post), null, new { dto.AirlineId, dto.AirportId });
         }
 
         [HttpPut("{id:int}")]
@@ -137,7 +145,7 @@ namespace AireLineTicketSystem.Controllers
             if (record == null)
                 return NotFound();
             
-            record.AirlineId = dto.AirlineId;
+            record.IsActive = dto.IsActive;
             _context.Update(record);
             await _context.SaveChangesAsync();
 

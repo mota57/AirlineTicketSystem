@@ -62,6 +62,7 @@ export default function GateFormComponent(props) {
         .post(`${formApiUrl}`, {
           airportId,
           name: state.name,
+          airlinesId: state.airlinesId,
           isActive: state.isActive,
         })
         .then(() => redirectToIndex())
@@ -73,7 +74,8 @@ export default function GateFormComponent(props) {
         .put(`${formApiUrl}/${gateid}`, {
           name: state.name,
           isActive: state.isActive,
-          airlineId: state.airlineId,
+          airlinesId: state.airlinesId,
+          airportId,
         })
         .then(() => redirectToIndex())
         .catch((data) => {
@@ -93,77 +95,80 @@ export default function GateFormComponent(props) {
   }
 
   return (
-    <div className="container">
-      <div className="row">
+    <div className="">
+      <div className="row  justify-content-md-center">
+        <div className="col-md-6">
+         
+            
+          <div className="card">
+            
+            <div className="card-body">
+              <div className="">
+                <FormError formerrorobj={state.formErrorObj} />
 
-     
-      <div className="card col-md-6">
-        <div className="card-header"><h2>Puerta</h2></div>
-        <div className="card-body">
-          <div className="container">
-            <FormError formerrorobj={state.formErrorObj} />
+              <h2>Puerta de embarque o desembarque</h2>
+                <form onSubmit={onSubmit}>
+                  <div className="form-group">
+                    <label className="form-label">Name </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="name"
+                      value={state.name}
+                      onChange={changeHandler}
+                    />
+                  </div>
 
-            <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
-              <div className="form-group">
-                <label className="form-label">Name </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="name"
-                  value={state.name}
-                  onChange={changeHandler}
-                />
+                  <div className="form-check m-top-1">
+                    <input
+                      checked={state.isActive}
+                      type="checkbox"
+                      className="form-check-input"
+                      value={state.isActive || false}
+                      name="isActive"
+                      onChange={(e) => changeHandler(e, state.isActive)}
+                      id="active"
+                    />
+                    <label className="form-check-label" htmlFor="#active">
+                      Activo
+                    </label>
+                  </div>
+                  <Picklist
+                    recordid={state.airlinesId}
+                    formName={`airlinesId`}
+                    label="Aerolinea"
+                    url={`${apiUrls.airline_airport.airlinesByAirportid}/${airportId}`}
+                    handleOnChange={changeHandler}
+                    logConsole={false}
+                    fieldName="airlineName"
+                    fieldValue="airlineId"
+                    multiple={true}
+                  />
+
+                  <div className="form-group m-top-1">
+                    <input
+                      type="submit"
+                      value="Guardar"
+                      className="btn btn-primary m-r-1-sm"
+                    />
+                    <input
+                      type="button"
+                      value="Cancelar"
+                      className="btn btn-danger"
+                      onClick={() => redirectToIndex()}
+                    />
+                  </div>
+                </form>
               </div>
-
-              <div className="form-check m-top-1">
-                <input
-                  checked={state.isActive}
-                  type="checkbox"
-                  className="form-check-input"
-                  value={state.isActive || false}
-                  name="isActive"
-                  onChange={(e) => changeHandler(e, state.isActive)}
-                  id="active"
-                />
-                <label className="form-check-label" htmlFor="#active">
-                  Activo
-                </label>
-              </div>
-              <Picklist
-                recordid={state.airlinesId}
-                formName={`airlinesId`}
-                label="Aerolinea"
-                url={`${apiUrls.airline_airport.airlinesByAirportid}/${airportId}`}
-                handleOnChange={changeHandler}
-                logConsole={false}
-                fieldName="airlineName"
-                fieldValue="airlineId"
-                multiple={true}
-              />
-
-              <div className="form-group m-top-1">
-                <input
-                  type="submit"
-                  value="Guardar"
-                  className="btn btn-primary m-r-1-sm"
-                />
-                <input
-                  type="button"
-                  value="Cancelar"
-                  className="btn btn-danger"
-                  onClick={() => redirectToIndex()}
-                />
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
-      <div className="col-md-6">
 
-        <pre>{JSON.stringify(state, null, 2)}</pre>
-      </div>
+      <div className="col-md-12">
 
-    </div>
+<pre>{JSON.stringify(state, null, 2)}</pre>
+</div>
     </div>
   );
 }

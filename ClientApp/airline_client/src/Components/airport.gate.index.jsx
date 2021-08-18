@@ -5,6 +5,7 @@ import apiUrls from "../utils/endpoints";
 import { Link, useParams, useRouteMatch } from "react-router-dom";
 import { ModalDelete } from "./app.modals";
 import GenericCrudTable from "../utils/GenericCrudTable";
+import BadgeIsActive from "../utils/BadgeIsActive";
 
 export default function GateIndexComponent(props) {
   const { recordid } = useParams(); //airportid
@@ -16,13 +17,13 @@ export default function GateIndexComponent(props) {
       // deleteUrl={(gateid) => `${apiUrls.airline.url}/${airlineid}`}
       createUrl={`${url}/form/0`}
       detailUrl={(gateid) => `${url}/form/${gateid}`}
-      headerList={["Puerta", "Estatus"]}
+      headerList={["Puerta", "Aerolineas" , "Estatus" ]}
       columns={(gate) => (
         <>
           <td >{gate.name}</td>
-          {/* <td>{gate.airlineName}</td> */}
+          <td>{gate.airlineName}</td>
           <td style={{ fontWeight: "400" }}>
-            {gate.isActive ? "Activo" : "Inactivo"}
+            <BadgeIsActive isActive={gate.isActive}/>
           </td>
         </>
       )}

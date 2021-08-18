@@ -18,20 +18,26 @@ export default function SideBarComponent(props) {
       isActive: false,
       url:'/airline'
     },
-    {
-      label: "TODO",
-      isActive: false,
-      url:'/todo'
-    },
+   
 
     {
       label: "Tickets",
       isActive: false,
       url:'/ticketAdmin'
     },
+    {
+      label: "Vuelos",
+      isActive: false,
+      url:'/flights'
+    },
   ]
   let indexStorage = localStorage.getItem('sidebarid', 1);
-  sideBarObj[indexStorage != null && indexStorage >= 0 ? indexStorage : 0].isActive = true;
+  try {
+
+    sideBarObj[indexStorage != null && indexStorage >= 0 ? indexStorage : 0].isActive = true;
+  } catch {
+    sideBarObj[0].isActive = true;
+  }
 
   const [menuSidebar, setMenuSidebar] = useState(sideBarObj);
 

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 /**
  * 
- * @param {recordid, label,fieldName,url, handleOnChange(e), logConsole=true|false } props 
+ * @param {recordid, label,fieldName,url, handleOnChange(e), logConsole=true|false, multiple={true|false} } props 
  * @returns 
  *  MUST PASS FIELD NAME OTHERWISE IS NOT GOING TO WORK
  *  <Picklist 

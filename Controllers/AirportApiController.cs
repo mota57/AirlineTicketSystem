@@ -17,7 +17,6 @@ namespace AireLineTicketSystem.Controllers
 
     //en este controlador se trabajara bagMaster, BagDetail,Gate,terminal
     [Route("api/[controller]")]
-    [EnableCors("AireLineTicketSystemPolicyCors1")]
     [ApiController]
     public class AirportApiController : ControllerBase
     {
@@ -33,6 +32,8 @@ namespace AireLineTicketSystem.Controllers
             this.logger.LogInformation("AirportApiController::init");
         }
         // GET: api/<AirportContorller>
+
+
         [HttpGet]
         public IEnumerable<AirportDTO> Get()  {
            return _mapper.Map<List<AirportDTO>>(_context.Airports.Include(p=> p.Country).ToList());
@@ -79,7 +80,7 @@ namespace AireLineTicketSystem.Controllers
             {
                  await _context.Airports.AddAsync(airport);
                  await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(Post), new { id = airport.Id }, airport);
+                return CreatedAtAction(nameof(Post), null, new { Id = airport.Id });
             }
             return BadRequest(ModelState);
         }

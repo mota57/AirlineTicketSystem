@@ -30,14 +30,22 @@ namespace AireLineTicketSystem.Controllers
         }
         // GET: api/<AirlineApi>
         [HttpGet]
-        public IEnumerable<AirlineDTO> Get() => _mapper.Map<List<AirlineDTO>>(_context.Airlines.ToList());
+        public IEnumerable<AirlineIndexDTO> Get() => 
+            _context.Airlines
+            .Select(a => new AirlineIndexDTO { 
+                    Id = a.Id,
+                    IsActive = a.isActive,
+                    Name = a.Name,
+                    TotalAirplanes = a.Airplanes.Count
+                })
+            .ToList();
 
         // GET api/<AirlineApi>?name=faa
-        [HttpGet("{name}")]
-        public IEnumerable<AirlineDTO> Get(string name)
-        {
-            return _mapper.Map<List<AirlineDTO>>(_context.Airlines.Where(p => p.Name.StartsWith(name)).ToList());
-        }
+        //[HttpGet("{name}")]
+        //public IEnumerable<AirlineDTO> Get(string name)
+        //{
+        //    return _mapper.Map<List<AirlineDTO>>(_context.Airlines.Where(p => p.Name.StartsWith(name)).ToList());
+        //}
 
      
     
@@ -68,7 +76,7 @@ namespace AireLineTicketSystem.Controllers
             {
                 await _context.Airlines.AddAsync(record);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(Post), new { id = record.Id }, record);
+                return CreatedAtAction(nameof(Post), null, new { record.Id });
             }
             return BadRequest(ModelState);
         }
@@ -79,7 +87,7 @@ namespace AireLineTicketSystem.Controllers
         public async Task<ActionResult> Put(int id, [FromBody] AirlineDTO dto)
         {
             var doesExists = await _context.Airlines.AnyAsync(x => x.Id == id);
-
+            
             if (!doesExists)
                 return NotFound();
 

@@ -30,11 +30,12 @@ namespace AireLineTicketSystem.Controllers
 
         // GET api/Terminal?name=faa
         [HttpGet()]
-        public IEnumerable<TerminalDTO> Get(int airportId)
+        public IEnumerable<TerminalIndexDTO> Get(int airportId)
         {
-            return _mapper.Map<List<TerminalDTO>>(
+            return _mapper.Map<List<TerminalIndexDTO>>(
                 _context.Terminals
-                .Include(p => p.Airline)
+                .Include(p => p.AirlineTerminals)
+                .ThenInclude(p => p.Airline)
                 .Where(p => p.AirportId == airportId).ToList()
            );
         }
@@ -44,8 +45,12 @@ namespace AireLineTicketSystem.Controllers
         public async Task<ActionResult<TerminalDTO>> GetById(int id)
         {
             var record = await _context.Terminals
+                   .Include(p => p.AirlineTerminals)
                    .AsNoTracking()
                    .FirstOrDefaultAsync(a => a.Id == id);
+            //avoid sending isActive = false
+            record.AirlineTerminals = record.AirlineTerminals.Where(p => p.IsActive).ToList();
+
             if (record == null)
                 return NotFound();
             return _mapper.Map<TerminalDTO>(record);
@@ -53,13 +58,14 @@ namespace AireLineTicketSystem.Controllers
 
 
         // GET api/Terminal/GetById/5
-        [HttpGet("getTerminalByAirlineId/{airlineid}")]
-        public async Task<List<PickList>> getTerminalByAirlineId(int airlineid)
+        [HttpGet("GetTerminalByParams")]
+        public async Task<List<PickList>> GetTerminalByParams([FromQuery] int airlineid, [FromQuery] int airportid)
         {
-            var records = await _context.Terminals
+            var records = await _context.AirlineTerminals
+                   .Include(p => p.Terminal)
                    .AsNoTracking()
-                   .Where(a => a.AirlineId == airlineid)
-                   .Select(p => new PickList {  Id = p.Id, Name = p.Name})
+                   .Where(a => a.AirlineId == airlineid && a.AirportId == airportid && a.IsActive)
+                   .Select(p => new PickList {  Id = p.TerminalId,  Name = p.Terminal.Name})
                    .ToListAsync();
             return records;
         }
@@ -74,13 +80,12 @@ namespace AireLineTicketSystem.Controllers
             }
 
             var record = _mapper.Map<Terminal>(dto);
-            record.Airline = null;
             record.Airport = null;
             if (this.TryValidateModel(record))
             {
                 await _context.Terminals.AddAsync(record);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(Post), new { id = record.Id }, record);
+                return CreatedAtAction(nameof(Post), null, new { record.Id });
             }
             return BadRequest(ModelState);
         }
@@ -94,15 +99,16 @@ namespace AireLineTicketSystem.Controllers
             if (!doesExists)
                 return NotFound();
 
-            var record = _mapper.Map<Terminal>(dto);
-            record.Airline = null;
-            record.Airport = null;
-            if (this.TryValidateModel(record))
+            dto.Id = id;
+
+            var recordMapped = _mapper.Map<Terminal>(dto);
+            recordMapped.Airport = null;
+            if (this.TryValidateModel(recordMapped))
             {
-                var recordDb = await _context.Terminals.FindAsync(id);
-                recordDb.Name = record.Name;
-                recordDb.IsActive = record.IsActive;
-                recordDb.AirlineId = record.AirlineId;
+                var recordDb = await _context.Terminals.Include(p => p.AirlineTerminals).FirstOrDefaultAsync(p => p.Id == id);
+                AddOrUpdateAirlineTerminal(recordDb, recordMapped);
+                recordDb.Name = recordMapped.Name;
+                recordDb.IsActive = recordMapped.IsActive;
                 _context.Update(recordDb);
                 await _context.SaveChangesAsync();
             }
@@ -122,6 +128,42 @@ namespace AireLineTicketSystem.Controllers
             _context.SetIsDelete(record);
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+
+
+        /// <summary>
+        /// Only to update the airlines that are going to be selected or deselected.
+        /// </summary>
+        /// <param name="recordDb"></param>
+        /// <param name="recordMapped"></param>
+        private void AddOrUpdateAirlineTerminal(Terminal recordDb, Terminal recordMapped)
+        {
+
+            //when user select from the list and hit save
+            foreach (var airlineTerminals in recordMapped.AirlineTerminals)
+            {
+                var airlineGateFromDb = recordDb.AirlineTerminals.FirstOrDefault(p => p.AirlineId == airlineTerminals.AirlineId && p.TerminalId == airlineTerminals.TerminalId);
+                if (airlineGateFromDb == null)
+                {
+                    airlineTerminals.IsActive = true;
+                    _context.AirlineTerminals.Add(airlineTerminals);
+                }
+                else
+                {
+                    airlineGateFromDb.IsActive = true;
+                }
+
+            }
+
+            //when user deselect from the list and hit save
+            foreach (var airlineGate in recordDb.AirlineTerminals)
+            {
+                if ((recordMapped.AirlineTerminals == null || recordMapped.AirlineTerminals.Count == 0) 
+                    || !recordMapped.AirlineTerminals.Any(p => p.AirlineId == airlineGate.AirlineId && p.TerminalId == airlineGate.TerminalId))
+                {
+                    airlineGate.IsActive = false;
+                }
+            }
         }
     }
 }

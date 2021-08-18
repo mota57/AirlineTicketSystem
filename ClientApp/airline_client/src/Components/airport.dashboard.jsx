@@ -26,9 +26,9 @@ export default function AirportDashboard(props) {
     }, [])
 
     return (
-      <div style={{backgroundColor:"#ebedef"}}>
+      <div className="container" style={{backgroundColor:"#ebedef"}}>
         
-        <div className="align-items-center border-bottom d-flex flex-md-nowrap flex-wrap justify-content-between mb-3 pb-2 pt-3">
+        <div className="border-bottom  justify-content-between mb-3 pb-2 pt-3 text-center">
           <h1 className="h2"><Link to={`/airport/details/${recordid}`}>{record.name}</Link></h1>
         </div>
 

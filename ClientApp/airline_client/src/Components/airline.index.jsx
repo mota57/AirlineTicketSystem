@@ -5,6 +5,7 @@ import apiUrls from "../utils/endpoints";
 
 import { Link} from "react-router-dom";
 import GenericCrudTable from "../utils/GenericCrudTable";
+import BadgeIsActive from "../utils/BadgeIsActive";
 
 export default function AirlineComponent(props) {
   return (
@@ -15,13 +16,15 @@ export default function AirlineComponent(props) {
       detailUrl={(airlineid) => `/airline/form/${airlineid}`}
       headerList={[
       "Airline",
+      "Total Aviones",
       "Is Active" 
       ]}
       columns={(airline) => (
         <>
-          <td style={{ width: "800px" }}>{airline.name}</td>
-          <td style={{ width: "200px", fontWeight: "400" }}>
-            {airline.isActive ? "Activo" : "Inactivo"}
+          <td >{airline.name}</td>
+          <td>{airline.totalAirplanes}</td>
+          <td style={{ fontWeight: "400" }}>
+            <BadgeIsActive isActive={airline.isActive}/>
           </td>
         </>
       )}

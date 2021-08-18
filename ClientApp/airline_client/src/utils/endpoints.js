@@ -43,7 +43,7 @@ const endpoints = {
             url,
             getbyid:`${url}/getbyid`,
             getAirlines:`${url}/GetAirlinesForTerminalsToSelect`,
-            getTerminalByAirlineId:(airlineid) =>`${url}/getTerminalByAirlineId/${airlineid}`
+            getTerminalByParams:(airlineid, airportid) =>`${url}/getTerminalByParams?airlineid=${airlineid || 0}&airportid=${airportid || 0}`
          }
     },
     bagPrice: () => {
@@ -79,6 +79,13 @@ const endpoints = {
             byId: (id) => `${url}/${id}`,
             update: (id) => `${url}/${id}`,
             delete: (id) => `${url}/${id}`
+        }
+    },
+    flightEcommerce: () => {
+        let url = `${apiUrl}/FlightEcommerceApi`;
+        return  {
+            search: `${url}/SearchAirportCountry`,
+            getAvailableFlights:`${url}/getAvailableFlights`
         }
     }
 }

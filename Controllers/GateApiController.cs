@@ -45,18 +45,23 @@ namespace AireLineTicketSystem.Controllers
                     .ThenInclude(p => p.Airline)
                     .Where(p => p.AirportId == airportId)
                     .ToListAsync();
-
+            
             return _mapper.Map<List<GateIndexDTO>>(records);
         }
 
 
-        // GET api/gate/GetById/5
+        // GET api/gate/GetById/5 This method is use for put
         [HttpGet("GetById/{id}")]
         public async Task<ActionResult<GateDTO>> GetById(int id)
         {
             var record = await _context.Gates
-                   .AsNoTracking()
-                   .FirstOrDefaultAsync(a => a.Id == id);
+                    .Include(p => p.AirlineGates)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(a => a.Id == id);
+
+            //avoid sending isActive = false
+            record.AirlineGates = record.AirlineGates.Where(p => p.IsActive).ToList();
+            
             if (record == null)
                 return NotFound();
             return _mapper.Map<GateDTO>(record);
@@ -74,7 +79,7 @@ namespace AireLineTicketSystem.Controllers
             var records = await _context.AirlineGates
                   .Include(p => p.Gate)
                  .AsNoTracking()
-                 .Where(a => a.AirlineId == airlineid && a.AirportId == airportid && a.IsActive == true)
+                 .Where(a => a.AirlineId == airlineid && a.AirportId == airportid && a.IsActive)
                  .Select(p => p.Gate)
                  .ToListAsync();
 
@@ -95,7 +100,7 @@ namespace AireLineTicketSystem.Controllers
             {
                 await _context.Gates.AddAsync(record);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(Post), new { id = record.Id }, record);
+                return CreatedAtAction(nameof(Post), null, new { record.Id });
             }
             return BadRequest(ModelState);
         }
@@ -108,6 +113,8 @@ namespace AireLineTicketSystem.Controllers
 
             if (!doesExists)
                 return NotFound();
+            
+            dto.Id = id;
 
             var record = _mapper.Map<Gate>(dto);
             if (this.TryValidateModel(record))
@@ -126,14 +133,14 @@ namespace AireLineTicketSystem.Controllers
             return NoContent();
         }
 
+
         /// <summary>
-        /// Only to update the airports that are going to be selected or deselected.
+        /// Only to update the airlines that are going to be selected or deselected.
         /// </summary>
         /// <param name="recordDb"></param>
         /// <param name="recordMapped"></param>
         private void AddOrUpdateAirlineGate(Gate recordDb, Gate recordMapped)
         {
-            if (recordMapped.AirlineGates != null && recordMapped.AirlineGates.Count == 0) return;
 
             //when user select from the list and hit save
             foreach (var airlineGate in recordMapped.AirlineGates)
@@ -141,17 +148,20 @@ namespace AireLineTicketSystem.Controllers
                 var airlineGateFromDb = recordDb.AirlineGates.FirstOrDefault(p => p.AirlineId == airlineGate.AirlineId && p.GateId == airlineGate.GateId);
                 if (airlineGateFromDb == null)
                 {
+                    airlineGate.IsActive = true;
                     _context.AirlineGates.Add(airlineGate);
                 } else
                 {
                     airlineGateFromDb.IsActive = true;
                 }
+                
             }
 
             //when user deselect from the list and hit save
             foreach (var airlineGate in recordDb.AirlineGates)
             {
-                if (!recordMapped.AirlineGates.Any(p => p.AirlineId == airlineGate.AirlineId && p.GateId == airlineGate.GateId))
+                if ((recordMapped.AirlineGates == null || recordMapped.AirlineGates.Count == 0) 
+                    || !recordMapped.AirlineGates.Any(p => p.AirlineId == airlineGate.AirlineId && p.GateId == airlineGate.GateId))
                 {
                     airlineGate.IsActive = false;
                 }

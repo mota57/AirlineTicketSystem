@@ -101,7 +101,7 @@ namespace AireLineTicketSystem.Controllers
                 _context.Add(recordMapped);
                 await _context.SaveChangesAsync();
                 dto.Id = recordMapped.Id;
-                return CreatedAtAction(nameof(Post), dto, recordMapped.Id);
+                return CreatedAtAction(nameof(Post), null, recordMapped.Id);
             }
 
             return BadRequest(ModelState);

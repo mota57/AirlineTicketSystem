@@ -6,6 +6,7 @@ export default function TodoComponent() {
         <ul className="group-list">
         <li className="list-group-item">
             <span className="badge bg-dark">WORKING</span> CREAR /ACTUALIZAR TICKET
+            * ONLY SHOW AIRPORTS THAT ARE ACTIVE.
                 * ONLY SHOW AIRLINES THAT ARE ACTIVE TO USE.
                 * ALLOW an airline to be part of the same gate in the same airport
                 <br/>
@@ -15,8 +16,27 @@ export default function TodoComponent() {
                 <br/>
                 <hr/>
                 <p>If an airport is inactive it should not in tickets.</p>
+                <p>If a terminal is inactive to do not show it in tickets</p>
 
 
+          </li>
+          <li className="list-group-item">
+          Colocar card style a terminal form.<br/>
+          Colocar el component activo o inactivo en estatus terminal.
+          Camibar el url de terminal para crear `../airport/details/2/terminal/form/0` a `../airport/details/2/terminal/create` 
+          </li>
+          <li className="list-group-item">
+           Colocar direccion en Aeropuerto.
+            
+          </li>
+          <li className="list-group-item">
+            Agregar titlo a los grids para que se entienda con que se esta trabajando.
+            
+          </li>
+
+          <li className="list-group-item">
+            cuando se cambia el nombre del aeropuerto, cambiar el nombre del titulo de arriba.
+            
           </li>
         <li className="list-group-item">
             <span className="badge bg-success">PENDING</span> AL ELIMINAR AEROLINEA ENTONCES PREVENIR ELIMINAR, PORQUE YA EXISTEN REGISTROS, LO QUE SE PUEDE HACER ES DESACTIVARLA, PARA NO AGREGAR MAS VUELOS.

@@ -234,168 +234,193 @@ export function TicketForm(props) {
   });
 
   return (
-    <div className="col-md-9">
-      <Formik
-        validationSchema={validationSchema}
-        enableReinitialize={true}
-        initialValues={props.model}
-        onSubmit={(values, actions) => {
-          
-          setTimeout(() => {
-            console.log(JSON.stringify(values, null, 2));
-            actions.setSubmitting(false);
-          }, 1000);
-        }}
-      >
-        {(formikProps) => (
-          <Form>
-            {JSON.stringify(formikProps.values, null, 2)}
+    <div
+      className="row justify-content-md-center"
+      style={{ marginTop: "20px" }}
+    >
+      <div className="col-md-10">
+        <div className="card">
+          <div className="card-body">
+            {/* body */}
 
-            <FieldArray name="flightScales">
-              {({ insert, remove, push }) => (
-                <>
-                  <Accordion>
-                    {formikProps.values.flightScales?.length > 0 &&
-                      formikProps.values.flightScales.map((flight, index) => (
-                        <Card key={index}>
-                          <Card.Header>
-                            <AccordionTogggle eventKey={index}>
-                              <label
-                                className="fw-normal fs-2"
-                                style={{ cursor: "pointer" }}
-                              >
-                                Escala # {index + 1}
-                              </label>
-                            </AccordionTogggle>
-                            <ButtonRemoveRecord
-                              deleteUrl={apiUrls
-                                .flightScale()
-                                .delete(flight.id)}
-                              index={index}
-                              removeMethod={remove}
-                            />
-                          </Card.Header>
-                          <Accordion.Collapse eventKey={index}>
-                            <Card.Body>
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <FormikGroupDropdown
-                                    name={`flightScales.${index}.airlineId`}
-                                    label="Aerolinea"
-                                    url={apiUrls.airline.url}
-                                    logConsole={false}
-                                  />
-                                </div>
-                                <div className="col-md-6">
-                                  <FormikGroupDropdown
-                                    name={`flightScales.${index}.airportDepartureId`}
-                                    label="Origen"
-                                    url={apiUrls.airline_airport.getAirportByAirlineId(
-                                      flight.airlineId
-                                    )}
-                                    logConsole={false}
-                                  />
-                                </div>
+            <div>
+              <Formik
+                validationSchema={validationSchema}
+                enableReinitialize={true}
+                initialValues={props.model}
+                onSubmit={(values, actions) => {
+                  setTimeout(() => {
+                    console.log(JSON.stringify(values, null, 2));
+                    actions.setSubmitting(false);
+                  }, 1000);
+                }}
+              >
+                {(formikProps) => (
+                  <Form>
+                    {JSON.stringify(formikProps.values, null, 2)}
 
-                                <div className="col-md-6">
-                                  <FormGroupInput
-                                    name={`flightScales.${index}.departTime`}
-                                    type="datetime-local"
-                                    label="Fecha de salida"
-                                  />
-                                </div>
-                              </div>
-                              <div className="row">
-                                <div className="col-md-6">
-                                  <FormikGroupDropdown
-                                    name={`flightScales.${index}.airportArrivalId`}
-                                    label="Destino"
-                                    url={apiUrls.airline_airport.getAirportByAirlineId(
-                                      flight.airlineId
-                                    )}
-                                    logConsole={false}
-                                  />
-                                </div>
+                    <FieldArray name="flightScales">
+                      {({ insert, remove, push }) => (
+                        <>
+                          <Accordion>
+                            {formikProps.values.flightScales?.length > 0 &&
+                              formikProps.values.flightScales.map(
+                                (flight, index) => (
+                                  <Card key={index}>
+                                    <Card.Header>
+                                      <AccordionTogggle eventKey={index}>
+                                        <label
+                                          className="fw-normal fs-2"
+                                          style={{ cursor: "pointer" }}
+                                        >
+                                          Escala # {index + 1}
+                                        </label>
+                                      </AccordionTogggle>
+                                      <ButtonRemoveRecord
+                                        deleteUrl={apiUrls
+                                          .flightScale()
+                                          .delete(flight.id)}
+                                        index={index}
+                                        removeMethod={remove}
+                                      />
+                                    </Card.Header>
+                                    <Accordion.Collapse eventKey={index}>
+                                      <Card.Body>
+                                        <div className="row">
+                                          <div className="col-md-12">
+                                            <FormikGroupDropdown
+                                              name={`flightScales.${index}.airlineId`}
+                                              label="Aerolinea"
+                                              url={apiUrls.airline.url}
+                                              logConsole={false}
+                                            />
+                                          </div>
+                                          <div className="col-md-6">
+                                            <FormikGroupDropdown
+                                              name={`flightScales.${index}.airportDepartureId`}
+                                              label="Origen"
+                                              url={apiUrls.airline_airport.getAirportByAirlineId(
+                                                flight.airlineId
+                                              )}
+                                              logConsole={false}
+                                            />
+                                          </div>
 
-                                <div className="col-md-6">
-                                  <FormGroupInput
-                                    name={`flightScales.${index}.arrivalTime`}
-                                    type="datetime-local"
-                                    label="Fecha de llegada"
-                                  />
-                                </div>
-                              </div>
-                              <FormikGroupDropdown
-                                name={`flightScales.${index}.airplaneId`}
-                                label="Avion"
-                                url={`${apiUrls.airplane.byairlineid}/${flight.airlineId}`}
-                                fieldName="brand"
-                                logConsole={false}
-                              />
+                                          <div className="col-md-6">
+                                            <FormGroupInput
+                                              name={`flightScales.${index}.departTime`}
+                                              type="datetime-local"
+                                              label="Fecha de salida"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="row">
+                                          <div className="col-md-6">
+                                            <FormikGroupDropdown
+                                              name={`flightScales.${index}.airportArrivalId`}
+                                              label="Destino"
+                                              url={apiUrls.airline_airport.getAirportByAirlineId(
+                                                flight.airlineId
+                                              )}
+                                              logConsole={false}
+                                            />
+                                          </div>
 
-                              <FormGroupInput
-                                name={`flightScales.${index}.minPrice`}
-                                type="number"
-                                label="Precio Minimo"
-                              />
+                                          <div className="col-md-6">
+                                            <FormGroupInput
+                                              name={`flightScales.${index}.arrivalTime`}
+                                              type="datetime-local"
+                                              label="Fecha de llegada"
+                                            />
+                                          </div>
+                                        </div>
+                                        <FormikGroupDropdown
+                                          name={`flightScales.${index}.airplaneId`}
+                                          label="Avion"
+                                          url={`${apiUrls.airplane.byairlineid}/${flight.airlineId}`}
+                                          fieldName="brand"
+                                          logConsole={false}
+                                        />
 
-                               <FormikGroupDropdown
-                                name={`flightScales.${index}.gateId`}
-                                label="Puerta"
-                                url={apiUrls.gate().getGatesByAirportAirline(flight.airportDepartureId, flight.airlineId)}
-                                logConsole={false}
-                              />
+                                        <FormGroupInput
+                                          name={`flightScales.${index}.minPrice`}
+                                          type="number"
+                                          label="Precio Minimo"
+                                        />
 
-                              <FormikGroupDropdown
-                                name={`flightScales.${index}.terminalId`}
-                                label="Terminal"
-                                url={apiUrls.terminal().getTerminalByAirlineId(flight.airlineId)}
-                                logConsole={false}
-                              /> 
+                                        <FormikGroupDropdown
+                                          name={`flightScales.${index}.gateId`}
+                                          label="Puerta"
+                                          url={apiUrls
+                                            .gate()
+                                            .getGatesByAirportAirline(
+                                              flight.airportDepartureId,
+                                              flight.airlineId
+                                            )}
+                                          logConsole={false}
+                                        />
 
-                              {isXHRIndex == index ? (
-                                <>
-                                  <button className="btn btn-outline-primary m-top-1 m-r-1-sm">
-                                    <LoadingIcon />
-                                  </button>
-                                </>
-                              ) : (
-                                <button
-                                  className="btn btn-outline-primary m-top-1 m-r-1-sm"
-                                  disabled={isXHRIndex == index}
-                                  onClick={() =>
-                                    addOrUpdateFlightScale(
-                                      flight,
-                                      index,
-                                      formikProps
-                                    )
-                                  }
-                                >
-                                  Guardar
-                                </button>
+                                        <FormikGroupDropdown
+                                          name={`flightScales.${index}.terminalId`}
+                                          label="Terminal"
+                                          url={apiUrls
+                                            .terminal()
+                                            .getTerminalByParams(
+                                              flight.airlineId, 
+                                              flight.airportDepartureId
+                                            )}
+                                          logConsole={false}
+                                        />
+
+                                        {isXHRIndex == index ? (
+                                          <>
+                                            <button className="btn btn-outline-primary m-top-1 m-r-1-sm">
+                                              <LoadingIcon />
+                                            </button>
+                                          </>
+                                        ) : (
+                                          <button
+                                            className="btn btn-outline-primary m-top-1 m-r-1-sm"
+                                            disabled={isXHRIndex == index}
+                                            onClick={() =>
+                                              addOrUpdateFlightScale(
+                                                flight,
+                                                index,
+                                                formikProps
+                                              )
+                                            }
+                                          >
+                                            Guardar
+                                          </button>
+                                        )}
+                                      </Card.Body>
+                                    </Accordion.Collapse>
+                                  </Card>
+                                )
                               )}
-                            </Card.Body>
-                          </Accordion.Collapse>
-                        </Card>
-                      ))}
-                    <div className="d-grid gap-2 m-top-1">
-                      <button
-                        className="btn btn-primary"
-                        type="button"
-                        onClick={() =>
-                          pushFlightScale(formikProps.values.id, push)
-                        }
-                      >
-                        Agregar Escala
-                      </button>
-                    </div>
-                  </Accordion>
-                </>
-              )}
-            </FieldArray>
-          </Form>
-        )}
-      </Formik>
+                            <div className="d-grid gap-2 m-top-1">
+                              <button
+                                className="btn btn-primary"
+                                type="button"
+                                onClick={() =>
+                                  pushFlightScale(formikProps.values.id, push)
+                                }
+                              >
+                                Agregar Escala
+                              </button>
+                            </div>
+                          </Accordion>
+                        </>
+                      )}
+                    </FieldArray>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+            {/* end body */}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

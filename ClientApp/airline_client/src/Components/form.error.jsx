@@ -2,7 +2,6 @@ import {uuidv4} from '../utils/methods';
 
 
 export default function FormError(props) {
-  console.log(props.formerrorobj);
   if(props.formerrorobj === null) {
     return <></>
   } else if (props.formerrorobj.rawerror) {
@@ -31,7 +30,7 @@ function BuildErros(errors) {
       {Object.keys(errors).map((errorKey) => {
      
         return (
-          <>
+          <div class="alert alert-danger">
           <label >{errorKey}</label>
           <ul style={{listStyle:'none'}}>
             {errors[errorKey].map((errorText) => {
@@ -43,7 +42,8 @@ function BuildErros(errors) {
               );
             })}
           </ul>
-          </>
+          <hr/>
+          </div>
         );
       })}
     </>

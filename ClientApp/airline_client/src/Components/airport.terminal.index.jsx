@@ -13,7 +13,7 @@ export default function TerminalIndexComponent(props) {
   return (
     <GenericCrudTable
       loadUrl={`${apiUrls.terminal().url}?airportId=${recordid}`}
-      deleteUrl={(terminalid) => `${apiUrls.terminal().url}/${terminalid}`}
+      // deleteUrl={(terminalid) => `${apiUrls.terminal().url}/${terminalid}`}
       createUrl={`${url}/form/0`}
       detailUrl={(terminalid) => `${url}/form/${terminalid}`}
       headerList={["Terminal", "Aerolinea", "Estatus"]}
@@ -21,7 +21,7 @@ export default function TerminalIndexComponent(props) {
       columns={(terminal) => (
         <>
           <td >{terminal.name}</td>
-          <td>{terminal.airlineName}</td>
+          <td>{terminal.airlineNames}</td>
           <td style={{ fontWeight: "400" }}>
             {terminal.isActive ? "Activo" : "Inactivo"}
           </td>

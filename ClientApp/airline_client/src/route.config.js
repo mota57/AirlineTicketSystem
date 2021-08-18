@@ -9,9 +9,12 @@ import ErrorPage from "./Components/ErrorPage";
 import { AirlineBagPriceFormView } from "./Components/airline.bagprice";
 import TodoComponent from "./Components/TodoComponent";
 import { TicketIndex, CreateTickets, EditTickets } from "./Components/airport.ticket";
+import FlightsDashboard from "./Components/flights.dashboard";
 
 
 const RouteConfig = [
+  { path: "/flights", componente: FlightsDashboard },
+
   { path: "/ticketAdmin", componente: TicketIndex },
   { path: "/flight/create", componente: CreateTickets },
   { path: "/flight/edit/:flightid", componente: EditTickets },

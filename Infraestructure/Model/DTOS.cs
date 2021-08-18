@@ -11,6 +11,19 @@ namespace AireLineTicketSystem.Infraestructure.Model
         public string Name { get;set;}
     }
 
+    public class SearchAirportCountryDTO
+    {
+        public int CountryId { get;set;}
+        public string CountryAirportName { get; set; }
+        public int AirportId { get;set;}
+    }
+
+    public class EntityDTO
+    {
+        public int Id { get;set;}
+        public string Name { get;set;}
+    }
+
     public class AirportDTO
     {
         public int Id { get; set; }
@@ -42,15 +55,30 @@ namespace AireLineTicketSystem.Infraestructure.Model
         public string Code { get; set; }
     }
 
+    public class TerminalIndexDTO
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string AirlineNames { get;set;}
+        public bool IsActive { get; set; }
+    }
 
     public class TerminalDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string AirlineName { get;set;}
         public int AirportId { get; set; }
-        public int? AirlineId { get; set; }
         public bool IsActive { get;set;}
+        public List<int> AirlinesId { get; set; }
+    }
+
+
+    public class AirlineIndexDTO
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int TotalAirplanes { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class AirlineDTO

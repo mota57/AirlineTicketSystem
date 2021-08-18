@@ -38,13 +38,13 @@ namespace AireLineTicketSystem.Controllers
         {
             var recordMapped = _mapper.Map<FlightScale>(dto);
 
-            if (TryValidateModel(recordMapped) || TryValidateFlightScale(recordMapped))
+            if (TryValidateModel(recordMapped) )
             {
                 recordMapped.Order = GetNextOrder(recordMapped.FlightId);
                 _context.Add(recordMapped);
                 await _context.SaveChangesAsync();
                 dto.Id = recordMapped.Id;
-                return CreatedAtAction(nameof(Post), dto, recordMapped.Id);
+                return CreatedAtAction(nameof(Post), null, recordMapped.Id);
             }
 
             return BadRequest(ModelState);
@@ -66,7 +66,7 @@ namespace AireLineTicketSystem.Controllers
             if (record == null) return NotFound();
             var recordMapped = _mapper.Map<FlightScale>(dto);
             
-            if (this.TryValidateModel(record) || TryValidateFlightScale(recordMapped))
+            if (this.TryValidateModel(record) )
             {
                 _context.SetIsModifiedFalse(record, "IsDeleted", "Id", "FlightId", "Order");
                 _context.Entry(record).CurrentValues.SetValues(recordMapped);
@@ -76,15 +76,11 @@ namespace AireLineTicketSystem.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var record = await _context.BagPriceDetails.FirstOrDefaultAsync(p => p.Id == id);
-            if (record == null) return NotFound();
-            _context.SetIsDelete(record);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
+        //[HttpDelete("{id:int}")]
+        //public async Task<ActionResult> Delete(int id)
+        //{
+        //   //todo
+        //}
 
         [NonAction]
         public bool TryValidateFlightScale(FlightScale scale) {

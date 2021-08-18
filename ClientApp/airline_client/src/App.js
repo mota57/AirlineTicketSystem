@@ -1,6 +1,7 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "font-awesome/css/font-awesome.css"
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 import RouteConfig from "./route.config";
 

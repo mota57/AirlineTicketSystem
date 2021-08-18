@@ -20,10 +20,10 @@ namespace AireLineTicketSystem.Infraestructure
 
             CreateMap<AirportCreateDTO, Airport>();
 
-            CreateMap<Terminal, TerminalDTO>()
-                .ForMember(p => p.AirlineName, (p) => p.MapFrom(x => x.Airline.Name));
 
-            CreateMap<TerminalDTO, Terminal>();
+            TerminalMapperHelper.Build(this);
+
+            GateMapperHelper.Build(this);
 
             CreateMap<Airline, AirlineDTO>()
                 .ReverseMap();
@@ -34,15 +34,6 @@ namespace AireLineTicketSystem.Infraestructure
                 .ReverseMap();
 
 
-            CreateMap<Gate, GateDTO>()
-                .ForMember(p => p.AirlinesId, x => x.MapFrom(MapFromAirlineGatesToAirlineIds));
-
-            CreateMap<GateDTO, Gate>()
-                .ForMember(p => p.AirlineGates, x => x.MapFrom(MapFromAirlinesId));
-                
-
-            CreateMap<Gate, GateIndexDTO>()
-                .ForMember(p => p.AirlineName, x => x.MapFrom(BuildAirlineNameColumn));
 
             CreateMap<AirlineAirport, AirlineAirportDTO>()
                  .ForMember(p => p.AirlineId, (p) => p.MapFrom(x => x.AirlineId))
@@ -61,18 +52,36 @@ namespace AireLineTicketSystem.Infraestructure
 
         }
 
+    }
 
-        private string BuildAirlineNameColumn(Gate gate, GateIndexDTO dto)
+    public static class GateMapperHelper
+    {
+        const int LIMIT_AIRLINE_NAME = 2;
+
+
+        public static void Build(AirlineMapperProfile profile)
         {
-            var LIMIT_AIRLINE_GATES = 3;
-            var truncateContent = gate.AirlineGates.Count() > LIMIT_AIRLINE_GATES ? "..." : "";
-            return string.Join(",",
-                           gate.AirlineGates.Select(p => p.Airline)
-                          .Select(p => p.Name)
-                          .Take(LIMIT_AIRLINE_GATES)) + truncateContent;
+
+            profile.CreateMap<Gate, GateDTO>()
+                .ForMember(p => p.AirlinesId, x => x.MapFrom(BuildAirlinesIdFromAirlineGate));
+
+            profile.CreateMap<GateDTO, Gate>()
+                .ForMember(p => p.AirlineGates, x => x.MapFrom(BuildAirlineGateFromAirlinesId));
+
+            profile.CreateMap<Gate, GateIndexDTO>()
+                .ForMember(p => p.AirlineName, x => x.MapFrom(BuildAirlineNamesFromAirlineGate));
         }
 
-        public List<int> MapFromAirlineGatesToAirlineIds(Gate gate, GateDTO dto)
+        static string BuildAirlineNamesFromAirlineGate(Gate gate, GateIndexDTO dto)
+        {
+            var truncateContent = gate.AirlineGates.Count() > LIMIT_AIRLINE_NAME ? "..." : "";
+            return string.Join(",",
+                           gate.AirlineGates.Where(p => p.IsActive).Select(p => p.Airline)
+                          .Select(p => p.Name)
+                          .Take(LIMIT_AIRLINE_NAME)) + truncateContent;
+        }
+
+        static  List<int> BuildAirlinesIdFromAirlineGate(Gate gate, GateDTO dto)
         {
             var output = new List<int>();
             if (gate.AirlineGates == null || gate.AirlineGates.Count == 0) return output;
@@ -80,13 +89,58 @@ namespace AireLineTicketSystem.Infraestructure
             return output;
         }
 
-        public List<AirlineGate> MapFromAirlinesId(GateDTO dto, Gate gate)
+        static  List<AirlineGate> BuildAirlineGateFromAirlinesId(GateDTO dto, Gate gate)
         {
             var output = new List<AirlineGate>();
-            if(dto.AirlinesId == null || dto.AirlinesId.Count == 0 ) return output;
-            output.AddRange(dto.AirlinesId.Select(id => new AirlineGate { AirportId = dto.AirportId, AirlineId = id, GateId = dto.Id  }));
+            if (dto.AirlinesId == null || dto.AirlinesId.Count == 0) return output;
+            output.AddRange(dto.AirlinesId.Select(id => new AirlineGate { AirportId = dto.AirportId, AirlineId = id, GateId = dto.Id }));
             return output;
         }
+    }
+
+
+    public static class TerminalMapperHelper
+    {
+        const int LIMIT_AIRLINE_NAME = 2;
+
+        public static void Build(AirlineMapperProfile profile)
+        {
+            profile.CreateMap<Terminal, TerminalIndexDTO>()
+               .ForMember(p => p.AirlineNames, (p) => p.MapFrom(BuildAirlineNameFromTerminalDto));
+
+            profile.CreateMap<TerminalDTO, Terminal>()
+                  .ForMember(p => p.AirlineTerminals, x => x.MapFrom(BuildAirlineTerminalsFromAirlineIds));
+
+            profile.CreateMap<Terminal, TerminalDTO>()
+                .ForMember(p => p.AirlinesId, x => x.MapFrom(BuildAirlinesIdFromAirlineTerminal));
+        }
+
+
+        public static string BuildAirlineNameFromTerminalDto(Terminal terminal, TerminalIndexDTO dto)
+        {
+            var truncateContent = terminal.AirlineTerminals.Count() > LIMIT_AIRLINE_NAME ? "..." : "";
+            return string.Join(",",
+                           terminal.AirlineTerminals.Where(p => p.IsActive).Select(p => p.Airline)
+                          .Select(p => p.Name)
+                          .Take(LIMIT_AIRLINE_NAME)) + truncateContent;
+        }
+
+        public static List<int> BuildAirlinesIdFromAirlineTerminal(Terminal record, TerminalDTO dto)
+        {
+            var output = new List<int>();
+            if (record.AirlineTerminals == null || record.AirlineTerminals.Count == 0) return output;
+            output.AddRange(record.AirlineTerminals.Select(p => p.AirlineId));
+            return output;
+        }
+
+        public static List<AirlineTerminal> BuildAirlineTerminalsFromAirlineIds(TerminalDTO dto, Terminal record)
+        {
+            var output = new List<AirlineTerminal>();
+            if (dto.AirlinesId == null || dto.AirlinesId.Count == 0) return output;
+            output.AddRange(dto.AirlinesId.Select(id => new AirlineTerminal { AirportId = dto.AirportId, AirlineId = id, TerminalId = dto.Id }));
+            return output;
+        }
+
     }
 
     public class Foo

@@ -90,10 +90,12 @@ export default function GenericCrudTable(props) {
 
       <div className="card">
         <div className="card-header bg-dark">
+
+        <Link to={props.createUrl} className="btn btn-primary">
+          Agregar
+        </Link>
         
-      <Link to={props.createUrl} className="btn btn-primary m-b-1">
-        Agregar
-      </Link>
+
         </div>
         <div className="card-body">
 

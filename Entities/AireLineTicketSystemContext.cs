@@ -29,6 +29,7 @@ namespace AireLineTicketSystem.Entities
         public DbSet<Airport> Airports { get; set; }
         public DbSet<Gate> Gates { get; set; }
         public DbSet<AirlineGate> AirlineGates { get;set;}
+        public DbSet<AirlineTerminal> AirlineTerminals { get;set;}
         public DbSet<Passenger> Passengers { get; set; }
         public DbSet<Flight> Flights { get; set; }
         public DbSet<FlightScale> FlightScales  { get; set; }
@@ -44,6 +45,13 @@ namespace AireLineTicketSystem.Entities
             SetAirlineConfiguration(modelBuilder);
             SetConvetionToGeneralProps(modelBuilder);
             SetGlobalFilter(modelBuilder);
+
+
+            modelBuilder.Entity<Airport>()
+             .HasOne(b => b.Country)
+             .WithMany(i => i.Airports)
+             .HasForeignKey(b => b.CountryId);
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -65,6 +73,8 @@ namespace AireLineTicketSystem.Entities
             builder.Entity<Airplane>().HasQueryFilter(p => !p.IsDeleted);
             builder.Entity<Airport>().HasQueryFilter(p => !p.IsDeleted);
             builder.Entity<Gate>().HasQueryFilter(p => !p.IsDeleted);
+            builder.Entity<AirlineTerminal>().HasQueryFilter(p => !p.IsDeleted);
+            builder.Entity<AirlineGate>().HasQueryFilter(p => !p.IsDeleted);
             builder.Entity<Passenger>().HasQueryFilter(p => !p.IsDeleted);
             builder.Entity<Flight>().HasQueryFilter(p => !p.IsDeleted);
             builder.Entity<FlightPrice>().HasQueryFilter(p => !p.IsDeleted);

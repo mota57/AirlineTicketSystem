@@ -4,14 +4,16 @@ using AireLineTicketSystem.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AireLineTicketSystem.Migrations
 {
     [DbContext(typeof(AireLineTicketSystemContext))]
-    partial class AireLineTicketSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20210816145959_addAirlineTerminal")]
+    partial class addAirlineTerminal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

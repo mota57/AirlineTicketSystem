@@ -66,7 +66,7 @@ export default function FormikGroupDropdown(props) {
       <select
        {...field}
        {...mapProps(props)}
-        className="form-control"
+        className="form-select"
         name={props.name}
         onChange={(event) => {
           //setState({ ...state, value: Number(event.target.value) });

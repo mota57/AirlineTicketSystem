@@ -20,7 +20,7 @@ export default function TerminalFormComponent(props) {
   const [state, setState] = useState({
     name: "",
     isActive: false,
-    airlineId:0,
+    airlinesId:[],
     formErrorObj: null,
   });
 
@@ -34,7 +34,7 @@ export default function TerminalFormComponent(props) {
           setState({
             ...state,
             name: data.data.name,
-            airlineId: data.data.airlineId,
+            airlinesId: data.data.airlinesId,
             isActive: data.data.isActive,
           })
         );
@@ -62,7 +62,7 @@ export default function TerminalFormComponent(props) {
         .post(`${formApiUrl}`, {
           airportId,
           name: state.name,
-          airlineId: state.airlineId,
+          airlinesId: state.airlinesId,
           isActive: state.isActive,
         })
         .then(() => redirectToIndex())
@@ -72,8 +72,9 @@ export default function TerminalFormComponent(props) {
     } else {
       axios
         .put(`${formApiUrl}/${terminalid}`, {
+          airportId,
           name: state.name,
-          airlineId: state.airlineId,
+          airlinesId: state.airlinesId,
           isActive: state.isActive,
         })
         .then(() => redirectToIndex())
@@ -95,64 +96,77 @@ export default function TerminalFormComponent(props) {
 
   return (
     <>
-      <pre>{JSON.stringify(state, null, 2)}</pre>
-      <div className="container">
-        <FormError formerrorobj={state.formErrorObj} />
-        <h4 className="mb-3">Terminal </h4>
-        <form onSubmit={onSubmit} className="col-xs-6 col-md-6">
-          <div className="form-group">
-            <label className="form-label">Nombre </label>
-            <input
-              type="text"
-              className="form-control"
-              name="name"
-              value={state.name}
-              onChange={changeHandler}
-            />
-          </div>
+      {/* <pre>{JSON.stringify(state, null, 2)}</pre> */}
+    
+    <div className="row justify-content-md-center">
+       <div className="col-md-6">
 
-          <div className="form-check m-top-1">
-            <input
-              checked={state.isActive}
-              type="checkbox"
-              className="form-check-input"
-              value={state.isActive || false}
-              name="isActive"
-              onChange={(e) => changeHandler(e, state.isActive)}
-              id="active"
-            />
-            <label className="form-check-label" htmlFor="#active">
-              Activo
-            </label>
-          </div>
+       
+        <div className="card">
+          
+            <div className="card-body">
+              <FormError formerrorobj={state.formErrorObj} />
+              <h4 className="mb-3">Terminal </h4>
+              <form onSubmit={onSubmit} >
+                <div className="form-group">
+                  <label className="form-label">Nombre </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="name"
+                    value={state.name}
+                    onChange={changeHandler}
+                  />
+                </div>
+
+                <div className="form-check m-top-1">
+                  <input
+                    checked={state.isActive}
+                    type="checkbox"
+                    className="form-check-input"
+                    value={state.isActive || false}
+                    name="isActive"
+                    onChange={(e) => changeHandler(e, state.isActive)}
+                    id="active"
+                  />
+                  <label className="form-check-label" htmlFor="#active">
+                    Activo
+                  </label>
+                </div>
 
 
-          <Picklist
-              recordid={state.airlineId}
-              formName="airlineId"
-              fieldName="airlineName"
-              fieldValue="airlineId"
-              label="Aerolinea"
-              url={`${apiUrls.airline_airport.airlinesByAirportid}/${airportId}`}
-              handleOnChange={changeHandler}
-              logConsole={false}
-            />
+                <Picklist
+                    recordid={state.airlinesId}
+                    formName="airlinesId"
+                    fieldName="airlineName"
+                    fieldValue="airlineId"
+                    label="Aerolinea"
+                    url={`${apiUrls.airline_airport.airlinesByAirportid}/${airportId}`}
+                    handleOnChange={changeHandler}
+                    multiple={true}
+                  />
 
-          <div className="form-group m-top-1">
-            <input
-              type="submit"
-              value="Guardar"
-              className="btn btn-primary m-r-1-sm"
-            />
-            <input
-              type="button"
-              value="Cancelar"
-              className="btn btn-danger"
-              onClick={() => redirectToIndex()}
-            />
-          </div>
-        </form>
-      </div>
+                <div className="form-group m-top-1">
+                  <input
+                    type="submit"
+                    value="Guardar"
+                    className="btn btn-primary m-r-1-sm"
+                  />
+                  <input
+                    type="button"
+                    value="Cancelar"
+                    className="btn btn-danger"
+                    onClick={() => redirectToIndex()}
+                  />
+                </div>
+              </form>
+            </div>
+        </div>
+        </div>
+    </div>
+ 
+
+
     </>
   );
 }

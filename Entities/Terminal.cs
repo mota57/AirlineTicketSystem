@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 namespace AireLineTicketSystem.Entities
 {
@@ -9,8 +10,7 @@ namespace AireLineTicketSystem.Entities
         public string Name { get;set;}
         public int AirportId { get;set;}
         public Airport Airport { get;set;}
-        public int? AirlineId { get;set;}
-        public Airline Airline { get;set;}
         public bool IsActive { get;set;}
+        public ICollection<AirlineTerminal> AirlineTerminals { get; set; } = new HashSet<AirlineTerminal>();
     }
 }
