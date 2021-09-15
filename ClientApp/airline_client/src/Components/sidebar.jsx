@@ -1,36 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { uuidv4 } from "../utils/methods";
 import { Offcanvas } from "react-bootstrap";
+import RouteConfig from "../route.config";
+import AuthHelper from "../auth/authorize.helper";
 
 export default function SideBarComponent(props) {
 
   const [show, setShow] = useState(false);
+  const authHelper = AuthHelper();
 
-  const sideBarObj  = [
-    {
-      label: "Airports",
-      isActive: false,
-      url:'/airport'
-    },
-    {
-      label: "Airline",
-      isActive: false,
-      url:'/airline'
-    },
-   
-
-    {
-      label: "Tickets",
-      isActive: false,
-      url:'/ticketAdmin'
-    },
-    {
-      label: "Vuelos",
-      isActive: false,
-      url:'/flights'
-    },
-  ]
+  let sideBarObj = RouteConfig.filter(m => m.sidebar).map(route => ({
+    ...route,
+    isActive:false
+   }));
+  
   let indexStorage = localStorage.getItem('sidebarid', 1);
   try {
 
@@ -72,10 +56,11 @@ export default function SideBarComponent(props) {
   
     
       <ul className="nav nav-pills flex-column mb-auto">
-        {menuSidebar.map((m, i) => (
+        {menuSidebar.filter(v => v.isAdmin == false 
+          || (v.isAdmin && authHelper.isAdmin())).map((m, i) => (
           <li className="nav-item" onClick={() => handleSetActive(i)} key={uuidv4()}>
             <Link
-              to={m.url}
+              to={m.path}
               className={`nav-link  ${m.isActive === true ? "active" : ""}`}
               aria-current="page"
             >

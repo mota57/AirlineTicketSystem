@@ -195,6 +195,30 @@ namespace AireLineTicketSystem.Infraestructure.Model
     {
         public int Id { get;set;}
         public string From { get;set;}
+        public int AirportOriginId { get;set;}
+        public int AirportDestinyId { get;set; }
         public string To { get;set;}
+    }
+
+
+    public class FlightAvailableDTO
+    {
+        public int FlightId { get; set; }
+        public string DateTimeStart { get; set; }
+        public string DateTimeEnd { get; set; }
+        public string CountryOrigin { get; set; }
+        public string CountryDestiny { get; set; }
+        public string AirlineName { get; set; }
+        public string TotalTime { get; set; }
+        public int TotalScales { get; set; }
+        public decimal Price { get; set; }
+        public List<ScaleDTO> ScalesInfo { get; set; }
+    }
+
+    public class ScaleDTO
+    {
+
+        public string TotalTime { get; set; }
+        public string AirportDestiny { get; set; }
     }
 }

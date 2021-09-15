@@ -13,9 +13,9 @@ import FlightsDashboard from "./Components/flights.dashboard";
 
 
 const RouteConfig = [
-  { path: "/flights", componente: FlightsDashboard },
+  { path: "/flights", componente: FlightsDashboard, isAdmin:false, sidebar:true, label:'Vuelos', order:4},
 
-  { path: "/ticketAdmin", componente: TicketIndex },
+  { path: "/ticketAdmin", componente: TicketIndex , isAdmin:true, sidebar:true, label:'Tickets',order:3 },
   { path: "/flight/create", componente: CreateTickets },
   { path: "/flight/edit/:flightid", componente: EditTickets },
   { path: "/todo", componente: TodoComponent },
@@ -27,13 +27,37 @@ const RouteConfig = [
 
   { path: "/airline/form/:airlineid", componente: AirlineFormComponent },
   { path: "/bagprice/:airlineid", componente: AirlineBagPriceFormView },
-  { path: "/airline", componente: AirlineComponent },
+  { path: "/airline", componente: AirlineComponent ,isAdmin:true, sidebar:true, label:'Aerolinea', order:2},
 
   { path: "/airport/create", componente: AirportCreateComponent },
   { path: "/airport/details/:recordid", componente: AirportDashboard },
 
-  { path: "/airport", componente: AirportComponent },
+  { path: "/airport", componente: AirportComponent, isAdmin:true, sidebar:true, label:'Aeropuertos' ,order:1},
   { path: "/", componente: AirportComponent, exact: true },
 ];
+
+// const sideBarObj  = [
+//   {
+//     label: "Airports",
+//     isActive: false,
+//     url:'/airport'
+//   },
+//   {
+//     label: "Airline",
+//     isActive: false,
+//     url:'/airline'
+//   },
+//   {
+//     label: "Tickets",
+//     isActive: false,
+//     url:'/ticketAdmin',
+//     isAdmin:true
+//   },
+//   {
+//     label: "Vuelos",
+//     isActive: false,
+//     url:'/flights'
+//   },
+// ]
 
 export default RouteConfig;

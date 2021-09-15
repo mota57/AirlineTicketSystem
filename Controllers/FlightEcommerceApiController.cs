@@ -48,22 +48,60 @@ namespace AireLineTicketSystem.Controllers
             //return records.Airports;
         }
 
-        [HttpGet("GetAvailableFlights")]
-        public async Task<List<AvailableFlightsDTO>> GetAvailableFlights([FromQuery] FlightAvailableParams query)
+        [HttpPost("GetAvailableFlights")]
+        public async Task<List<FlightAvailableDTO>> GetAvailableFlights([FromBody] FlightAvailableParams query)
         {
 
             var flightIds = await _context.FlightScales
                     .Where(p => 
                         p.Order == 1 
-                        && p.DepartTime.Date == query.DateDeparture.Date 
+                        && p.DepartTime.Date.Year == query.DateDeparture.Date.Year
+                        && p.DepartTime.Date.Month == query.DateDeparture.Date.Month
+                        && p.DepartTime.Date.Day == query.DateDeparture.Date.Day
                         && p.AirportDepartureId == query.AirportDepartureId )
                     .Select(f => f.FlightId)
                     .Distinct()
                     .ToListAsync();
-            
-             
-            ///todo 
-            return null;
+
+            Func<DateTime,DateTime,string> buildTotalTimeStr = (d1,d2) =>
+            {
+                var totalTimeSpan = (d2-d1);
+                return $"{totalTimeSpan.TotalHours} h  {totalTimeSpan.TotalMinutes} min";
+            };
+
+            var result  = _context.Flights
+                .Include(p =>p.FlightScales).ThenInclude(p =>p.AirportDeparture).ThenInclude(p => p.Country)
+                .Include(p =>p.FlightScales).ThenInclude(p =>p.Airline)
+                .Include(p =>p.FlightScales).ThenInclude(p =>p.AirportArrival).ThenInclude(p => p.Country)
+                .Where(f => flightIds.Contains(f.Id))
+                .ToList()
+                .Select(p =>
+                {
+                    var origin = p.FlightScales.First();
+                    var destiny = p.FlightScales.Last();
+                    var result = new FlightAvailableDTO
+                    {
+                        FlightId = p.Id,
+                        Price = origin.MinPrice,
+                        DateTimeStart = origin.DepartTime.ToLongDateString(),
+                        DateTimeEnd = destiny.ArrivalTime.ToLongDateString(),
+                        AirlineName = origin.Airline.Name,
+                        CountryOrigin = origin.AirportDeparture.Country.Name,
+                        CountryDestiny = destiny.AirportArrival.Country.Name,
+                        TotalScales = p.FlightScales.Count(),
+                        TotalTime = buildTotalTimeStr(origin.DepartTime, destiny.ArrivalTime),
+                        ScalesInfo = p.FlightScales.Select(fs => 
+                            new ScaleDTO { 
+                                AirportDestiny = fs.AirportArrival.Name,
+                                TotalTime = buildTotalTimeStr(fs.DepartTime, fs.ArrivalTime)
+                            }
+                       ).ToList()
+
+                    };
+                    return result;
+                }).ToList();
+                
+            return result;
 
         }
 
@@ -75,25 +113,7 @@ namespace AireLineTicketSystem.Controllers
             public DateTime DateDeparture { get;set;}
         }
 
-        public class AvailableFlightsDTO
-        {
-            public int FlightId { get;set;}
-            public DateTime DateTimeStart { get; set; }
-            public DateTime DateTimeEnd { get; set; }
-            public string CountryOrigin { get; set; }
-            public string CountryDestiny { get; set; }
-            public string AirlineName { get; set; }
-            public string TotalTime { get; set; }
-            public int TotalScales { get; set; }
-            public List<ScaleDTO> scalesInfo { get; set; }
-        }
-
-        public class ScaleDTO
-        {
-
-            public string TotalTime { get; set; }
-            public string AirportDestiny { get; set; }
-        }
+     
 
     }
 }

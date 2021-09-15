@@ -55,8 +55,8 @@ export default function FlightsDashboard() {
   });
 
   function loadRecords(values) {
-    return axios.get(apiUrls.flightEcommerce().getAvailableFlights, values)
-    .then((data) => setFlights(data.response.data))
+    return axios.post(apiUrls.flightEcommerce().getAvailableFlights, values)
+    .then((data) => {  setFlights(data.data) })
 
   }
 
@@ -69,7 +69,7 @@ export default function FlightsDashboard() {
         onSubmit={(values, actions) => {
           console.log('submmited') ;
           // same shape as initial values
-          //loadRecords(values).finally(() => actions.setSubmitting(false));
+          loadRecords(values).finally(() => actions.setSubmitting(false));
         }}
         initialValues={{
           airportDepartureId: null,
@@ -159,7 +159,7 @@ export default function FlightsDashboard() {
                 </div>
 
                 <div className="col text-end">
-                  <h3><span class="badge bg-secondary">{f.price}</span></h3>
+                  <h3><span className="badge bg-secondary">{f.price}</span></h3>
 
                   {f.totalTime} ({f.totalScales} escalas)
                   <ul style={{listStyle:'none'}}>

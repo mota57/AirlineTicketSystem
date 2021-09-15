@@ -7,11 +7,12 @@ using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace AireLineTicketSystem.Entities
 {
 
-    public class AireLineTicketSystemContext :  DbContext
+    public class AireLineTicketSystemContext :  IdentityDbContext
     {
 
         public AireLineTicketSystemContext(DbContextOptions<AireLineTicketSystemContext> options)

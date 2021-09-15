@@ -49,14 +49,14 @@ export class Delete extends Component{
         return (
             <div style={{ marginTop: 10 }}>
             <h2>Delete trip confirmation</h2>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title"> {this.state.name} </h4>
-                    <p class="card-text"> {this.state.description} </p>
-                    <button onClick={this.onCancel} class="btn btn-default">
+            <div className="card">
+                <div className="card-body">
+                    <h4 className="card-title"> {this.state.name} </h4>
+                    <p className="card-text"> {this.state.description} </p>
+                    <button onClick={this.onCancel} className="btn btn-default">
                     Cancel
                     </button>
-                    <button onClick={this.onConfirmation} class="btn btn-danger">
+                    <button onClick={this.onConfirmation} className="btn btn-danger">
                     Confirm
                     </button>
                     </div>

@@ -30,7 +30,7 @@ function BuildErros(errors) {
       {Object.keys(errors).map((errorKey) => {
      
         return (
-          <div class="alert alert-danger">
+          <div className="alert alert-danger">
           <label >{errorKey}</label>
           <ul style={{listStyle:'none'}}>
             {errors[errorKey].map((errorText) => {

@@ -60,12 +60,17 @@ namespace AireLineTicketSystem.Controllers
                     //dto.To = airports.FirstOrDefault(p => p.Id == scale.AirportArrivalId)?.Name;
                     dto.From = scale.AirportDeparture.Name;
                     dto.To = scale.AirportArrival.Name;
+                    dto.AirportOriginId = scale.AirportDeparture.Id;
+                    dto.AirportDestinyId = scale.AirportArrival.Id;
                 }
                 else if (flight.FlightScales?.Count() > 1)
                 {
-
-                    dto.From = flight.FlightScales.FirstOrDefault().AirportDeparture.Name;
-                    dto.To = flight.FlightScales.LastOrDefault().AirportArrival.Name;
+                    var first = flight.FlightScales.First();
+                    var destiny = flight.FlightScales.Last();
+                    dto.From = first.AirportDeparture.Name;
+                    dto.To = destiny.AirportArrival.Name;
+                    dto.AirportOriginId = first.AirportDeparture.Id;
+                    dto.AirportDestinyId =  destiny.AirportArrival.Id;
                 }
                 else
                 {
