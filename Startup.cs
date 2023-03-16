@@ -44,7 +44,7 @@ namespace AireLineTicketSystem
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AireLineTicketSystemApi", Version = "v1"  });
             });
 
-          
+
 
             services.AddDbContext<AireLineTicketSystemContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
@@ -58,7 +58,7 @@ namespace AireLineTicketSystem
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerfactory,
-                        Microsoft.AspNetCore.Hosting.IApplicationLifetime appLifetime)
+                        IHostApplicationLifetime appLifetime)
         {
             if (env.IsDevelopment())
             {

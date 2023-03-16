@@ -1,4 +1,19 @@
-﻿DONE-----INSTALL AUTOMMATER AND TEST IT
+﻿CLIENT APP
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  npm install -g serve
+  serve -s build
+
+
+
+
+
+
+
+
+DONE-----INSTALL AUTOMMATER AND TEST IT
 DONE-----INSTALL ENTITY FRAMEWOK
 CREATE DB CONTEXT
 
